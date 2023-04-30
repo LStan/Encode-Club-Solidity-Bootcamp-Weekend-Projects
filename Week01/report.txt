@@ -16,3 +16,11 @@ https://sepolia.etherscan.io/tx/0xb65cfcc39f1fed47e951ec219fffbb586194d4a5825c78
 
 2.Transfered ownership with function transferOwnership to 0xD6230D359064d1A7D77D0Cd3a54781fE5A4dB8D8
 https://sepolia.etherscan.io/tx/0xe3c38c75722d885dad7583fe80b53417b4b5e9856c492dcc0a0288a0c55ee79c
+
+Rahul:
+
+1. Deployed the helloWorld.sol contract on Goreli test network
+https://goerli.etherscan.io/tx/0x04a186483af658be539c326a26438827a0e491d566e90590cb46fa3138f57116
+
+2. Called the setText function with string "Happy Weekend"
+https://goerli.etherscan.io/tx/0x133b48689a51040abe8f43460e0f0389b246e3b3cd1f15bf1dfbce3fcd17066a
