@@ -24,3 +24,14 @@ https://goerli.etherscan.io/tx/0x04a186483af658be539c326a26438827a0e491d566e9059
 
 2. Called the setText function with string "Happy Weekend"
 https://goerli.etherscan.io/tx/0x133b48689a51040abe8f43460e0f0389b246e3b3cd1f15bf1dfbce3fcd17066a
+
+
+Sivasai Silla:
+1. Deployed the helloWorld.sol contract on Sepolia test network:
+https://sepolia.etherscan.io/tx/0x2b1f175b96c01e9fb446e4d33a5e04f201814e08286d38cc9999a0e66356d022
+
+2. Called the setText function with string "Hello Encode Club"
+https://sepolia.etherscan.io/tx/0x6652b0eddc5f2b9a1abc1119fae2b15632544887615c1358a099379cf639f30a
+
+3. Transfered ownership with function transferOwnership to 0xDA3AF9c51F6953988a46C21d43A5152AFC7f389d
+https://sepolia.etherscan.io/tx/0x08483534a192efd91b02d32ae3fcf0fab1f594948e2a2a3c4a9e0e4b650a1290
