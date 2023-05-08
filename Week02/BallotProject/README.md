@@ -55,3 +55,5 @@ Giving the right to vote to 0xD6230D359064d1A7D77D0Cd3a54781fE5A4dB8D8: https://
 Vote by 0xD6230D359064d1A7D77D0Cd3a54781fE5A4dB8D8: https://sepolia.etherscan.io/tx/0x1dd3720b5f3a2c96a36424a1be5e32fbf57edb2ed6309de40f162c136840949c
 
 Delegation of vote by 0xDA3AF9c51F6953988a46C21d43A5152AFC7f389d to 0xF98981628E50d9b80c7A769116609787f94770CA: https://sepolia.etherscan.io/tx/0xcf694666c7e8f759e58248e5aa27c7930a5f78a92b9cb1d2af591bee7e711959
+
+To check all other contract events - [0x9FfE30a62B776A31ADE2C2aEb59412d3E0126428](https://sepolia.etherscan.io/address/0x9FfE30a62B776A31ADE2C2aEb59412d3E0126428)
