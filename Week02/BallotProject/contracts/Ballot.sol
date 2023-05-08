@@ -144,4 +144,12 @@ contract Ballot {
     function winnerName() external view returns (bytes32 winnerName_) {
         winnerName_ = proposals[winningProposal()].name;
     }
+
+    function listProposal() external view returns (bytes32[] memory) {
+        bytes32[] memory proposalNames = new bytes32[](proposals.length);
+        for (uint i = 0; i < proposals.length; i++) {
+            proposalNames[i] = proposals[i].name;
+        }
+        return proposalNames;
+    }
 }
