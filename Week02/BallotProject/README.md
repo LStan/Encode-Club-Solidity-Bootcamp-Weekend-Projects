@@ -35,16 +35,23 @@ The given smart contract is a decentralized voting system with delegation functi
 Constructor: Initializes the contract, sets the chairperson as the sender, and creates an array of proposals based on the given proposal names.
 
 giveRightToVote: This function allows the chairperson to give the right to vote to an address.
+<img width="1287" alt="CleanShot 2023-05-08 at 14 49 43" src="https://user-images.githubusercontent.com/24606613/236786956-3f7a03ef-e8df-485c-a3e8-fa9e2b3e8541.png">
 
 delegate: Allows a voter to delegate their voting power to another voter.
+<img width="1287" alt="CleanShot 2023-05-08 at 14 50 14@2x" src="https://user-images.githubusercontent.com/24606613/236787073-1fd649d2-e4f5-413c-a50c-e9c108094fbc.png">
 
 vote: Allows a voter to cast their vote for a specific proposal.
+![CleanShot 2023-05-08 at 14 51 49@2x](https://user-images.githubusercontent.com/24606613/236787440-0d62e666-6f99-4a4f-af03-ecf268022066.png)
 
 winningProposal: Computes the winning proposal based on the accumulated votes.
 
 winnerName: Returns the name of the winning proposal.
+<img width="1287" alt="CleanShot 2023-05-08 at 14 52 27@2x" src="https://user-images.githubusercontent.com/24606613/236787536-3df795c5-81ef-46dc-b0ff-5cf84b8ef063.png">
 
 listProposal: Returns a list of all proposals.
+<img width="1287" alt="CleanShot 2023-05-08 at 14 53 07@2x" src="https://user-images.githubusercontent.com/24606613/236787652-804da047-8b25-457b-97b1-22ec1b614835.png">
+
+
 
 ## Transactions:
 
