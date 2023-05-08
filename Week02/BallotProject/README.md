@@ -27,10 +27,10 @@ Get winner proposal name:
 yarn ts-node --files ./scripts/getWinnerName.ts <contract_address>
 ```
 
-##Introduction:
+## Introduction:
 The given smart contract is a decentralized voting system with delegation functionality. It allows users to create a new ballot, give rights to vote, delegate votes to other users, and cast their votes on a proposal.
 
-##Functions:
+## Functions:
 
 Constructor: Initializes the contract, sets the chairperson as the sender, and creates an array of proposals based on the given proposal names.
 
@@ -46,7 +46,7 @@ winnerName: Returns the name of the winning proposal.
 
 listProposal: Returns a list of all proposals.
 
-##Transactions:
+## Transactions:
 
 Contract creation: https://sepolia.etherscan.io/tx/0xbf7628ff37b2680038adc2f850cc869c429ae8303bd62e079cb46f7d9453a874
 
