@@ -8,7 +8,7 @@ async function main() {
   console.log("Deploying Ballot contract");
   console.log("Proposals: ");
   proposals.forEach((element, index) => {
-    console.log(`Proposal N. ${index + 1}: ${element}`);
+    console.log(`Proposal No. ${index + 1}: ${element}`);
   });
 
   const signer = getSigner();
