@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.7.0 <0.9.0;
 
+import "@openzeppelin/contracts/utils/math/Math.sol";
+
 interface IMyVotingToken {
     function getPastVotes(address, uint256) external view returns (uint256);
 }
 
-contract Ballot {
+contract TokenizedBallot {
     struct Proposal {
         bytes32 name;
         uint voteCount;
@@ -17,9 +19,9 @@ contract Ballot {
 
     mapping(address => uint256) public votingPowerSpent;
 
-    constructor(bytes32[] memory proposalNames, IMyVotingToken _tokenContract) {
+    constructor(bytes32[] memory proposalNames, IMyVotingToken _tokenContract, uint256 _targetBlockNumber) {
         tokenContract = _tokenContract;
-        targetBlockNumber = block.number;
+        targetBlockNumber = _targetBlockNumber;
         for (uint i = 0; i < proposalNames.length; i++) {
             proposals.push(Proposal({name: proposalNames[i], voteCount: 0}));
         }
@@ -35,8 +37,9 @@ contract Ballot {
     }
 
     function votingPower(address account) public view returns (uint256) {
+        uint256 blockNumber = Math.min(targetBlockNumber, block.number - 1);
         return
-            tokenContract.getPastVotes(account, targetBlockNumber) -
+            tokenContract.getPastVotes(account, blockNumber) -
             votingPowerSpent[account];
     }
 
