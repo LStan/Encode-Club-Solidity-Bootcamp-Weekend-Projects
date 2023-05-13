@@ -21,6 +21,18 @@ Give a right to vote:
 yarn ts-node --files ./scripts/giveRightToVote.ts <contract_address> <voter_address>
 ```
 
+Delegate a vote:
+
+```shell
+yarn ts-node --files ./scripts/delegate.ts <contract_address> <voter_address>
+```
+
+Vote:
+
+```shell
+yarn ts-node --files ./scripts/vote.ts <contract_address> <proposal_num>
+```
+
 Get winner proposal name:
 
 ```shell

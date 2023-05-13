@@ -134,7 +134,6 @@ describe("Ballot", () => {
   });
 
   describe("when someone interact with the winningProposal function after one vote is cast for the first proposal", () => {
-    // TODO
     it("should return 0", async () => {
       await ballotContract.vote(0);
       expect(await ballotContract.winningProposal()).to.eq(0);
