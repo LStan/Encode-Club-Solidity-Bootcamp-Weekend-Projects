@@ -19,7 +19,11 @@ contract TokenizedBallot {
 
     mapping(address => uint256) public votingPowerSpent;
 
-    constructor(bytes32[] memory proposalNames, IMyVotingToken _tokenContract, uint256 blocksQuantity) {
+    constructor(
+        bytes32[] memory proposalNames,
+        IMyVotingToken _tokenContract,
+        uint256 blocksQuantity
+    ) {
         tokenContract = _tokenContract;
         targetBlockNumber = block.number + blocksQuantity;
         for (uint i = 0; i < proposalNames.length; i++) {
@@ -28,6 +32,10 @@ contract TokenizedBallot {
     }
 
     function vote(uint proposal, uint256 amount) external {
+        require(
+            proposal < proposals.length,
+            "TokenizedBallot: invalid proposal"
+        );
         require(
             votingPower(msg.sender) >= amount,
             "TokenizedBallot: trying to vote more than allowed"
