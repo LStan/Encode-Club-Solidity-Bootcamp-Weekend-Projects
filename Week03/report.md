@@ -18,6 +18,8 @@ https://sepolia.etherscan.io/tx/0x81457f4e7efd271dcfdff9deb8890a6d009775d215ce40
 Minting 100.0 tokens to the address 0xC506dB1beb6555B1b887AD2aC518d9676Fa95e6b
 https://sepolia.etherscan.io/tx/0x0690c9790d74bf76c56b237c7e2749ebd5439d695f303078b8a55e9988f04c2f
 
+<img width="344" alt="CleanShot 2023-05-15 at 15 47 29@2x" src="https://github.com/LStan/Encode-Club-Solidity-Bootcamp-Weekend-Projects/assets/24606613/f4773b9b-dda8-4115-86c4-7b998fef9f60">
+
 3. Deploy the TokenizedBallot.sol contract on Sepolia test network
 Deploying TokenizedBallot contract
 Proposals: 
