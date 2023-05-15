@@ -34,6 +34,9 @@ https://sepolia.etherscan.io/tx/0xfaa7efc319aeef03121f1ff304f2fe91a72a083a100bc4
 Delegating to 0xc66Ee14eA456826259aB4d1D0043beD38a68D3A3
 https://sepolia.etherscan.io/tx/0xa9e7fcf56a9b26d800f1deb5e916c19c52cf7dc8761342b6e4e3c43f2a81138e
 
+Delegating to 0xDA3AF9c51F6953988a46C21d43A5152AFC7f389d
+https://sepolia.etherscan.io/tx/0x757053a6cd3db32d01577f5a367206b66ffc37c2e1432ed9607d0ee9c6ecba1a
+
 5. Voting
 Casting vote to proposal "Proposal2"
 https://sepolia.etherscan.io/tx/0x12df134851406efe6abcf7364c05fecf4f78d1b63244430699f82ced035f9ed9
