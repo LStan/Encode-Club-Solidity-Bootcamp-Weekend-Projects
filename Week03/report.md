@@ -23,11 +23,12 @@ https://sepolia.etherscan.io/tx/0x0690c9790d74bf76c56b237c7e2749ebd5439d695f3030
 ### Deploy the TokenizedBallot.sol contract on Sepolia test network
 Deploying TokenizedBallot contract
 Proposals: 
-Proposal No. 1: Proposal0
-Proposal No. 2: Proposal1
-Proposal No. 3: Proposal2
-Proposal No. 4: Proposal3
-Proposal No. 5: Proposal4
+* Proposal No. 1: Proposal0
+* Proposal No. 2: Proposal1
+* Proposal No. 3: Proposal2
+* Proposal No. 4: Proposal3
+* Proposal No. 5: Proposal4
+
 The ballot contract was deployed at 0x76b3DcF1F09b7844e700a690Dd4Ceb43C9b69C65 at block 3483760
 Voting will end at block 3498760
 https://sepolia.etherscan.io/tx/0xfaa7efc319aeef03121f1ff304f2fe91a72a083a100bc43ec6c406a52abf5074
