@@ -1,8 +1,8 @@
-1. Deploy the MyERC20Votes.sol contract on Sepolia test network
+### Deploy the MyERC20Votes.sol contract on Sepolia test network
 The contract was deployed at address 0xaaA84a2aF9dAA7ffF0aabEE183584e4C735Bda84 at block 3483690
 https://sepolia.etherscan.io/tx/0xbc54f767982f1a5f9849440da02ca16b11ea98daa79c00be156f016a7fc5b7c8
 
-2. Mint tokens
+### Mint tokens
 Minting 100.0 tokens to the address 0xc66Ee14eA456826259aB4d1D0043beD38a68D3A3
 https://sepolia.etherscan.io/tx/0xa29dae461bed7cbe2fe38eaf46197185f65f4e0412852c5d1b298aeb0c34da8d
 
@@ -20,7 +20,7 @@ https://sepolia.etherscan.io/tx/0x0690c9790d74bf76c56b237c7e2749ebd5439d695f3030
 
 <img width="344" alt="CleanShot 2023-05-15 at 15 47 29@2x" src="https://github.com/LStan/Encode-Club-Solidity-Bootcamp-Weekend-Projects/assets/24606613/f4773b9b-dda8-4115-86c4-7b998fef9f60">
 
-3. Deploy the TokenizedBallot.sol contract on Sepolia test network
+### Deploy the TokenizedBallot.sol contract on Sepolia test network
 Deploying TokenizedBallot contract
 Proposals: 
 Proposal No. 1: Proposal0
@@ -32,13 +32,13 @@ The ballot contract was deployed at 0x76b3DcF1F09b7844e700a690Dd4Ceb43C9b69C65 a
 Voting will end at block 3498760
 https://sepolia.etherscan.io/tx/0xfaa7efc319aeef03121f1ff304f2fe91a72a083a100bc43ec6c406a52abf5074
 
-4. Self delegate
+### Self delegate
 Delegating to 0xc66Ee14eA456826259aB4d1D0043beD38a68D3A3
 https://sepolia.etherscan.io/tx/0xa9e7fcf56a9b26d800f1deb5e916c19c52cf7dc8761342b6e4e3c43f2a81138e
 
 Delegating to 0xDA3AF9c51F6953988a46C21d43A5152AFC7f389d
 https://sepolia.etherscan.io/tx/0x757053a6cd3db32d01577f5a367206b66ffc37c2e1432ed9607d0ee9c6ecba1a
 
-5. Voting
+### Voting
 Casting vote to proposal "Proposal2"
 https://sepolia.etherscan.io/tx/0x12df134851406efe6abcf7364c05fecf4f78d1b63244430699f82ced035f9ed9
