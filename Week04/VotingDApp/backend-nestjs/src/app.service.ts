@@ -10,8 +10,10 @@ export class AppService {
 
   constructor(private configService: ConfigService) {
     // this.provider = ethers.getDefaultProvider('sepolia');
-    const apiKey = this.configService.get<string>('ALCHEMY_API_KEY');
-    this.provider = new ethers.providers.AlchemyProvider('sepolia', apiKey);
+    // const apiKey = this.configService.get<string>('ALCHEMY_API_KEY');
+    // this.provider = new ethers.providers.AlchemyProvider('sepolia', apiKey);
+    const url = `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`;
+    this.provider = new ethers.providers.JsonRpcProvider(url);
     this.contract = new ethers.Contract(
       this.getAddress(),
       tokenJson.abi,
