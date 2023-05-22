@@ -18,8 +18,8 @@ let votingPower, setVotingPower;
 
 export default function InstructionsComponent() {
   const router = useRouter();
-  [ballotAddress, setBallotAddress] = useState("0xE1cbf3b40c34AE9aDc0390E9c781cD3b4D5FC791");
-  [ERC20Address, setERC20Address] = useState("0xCf90EBBDFD9F348Fc7A3219f4D9C383aE16b2217");
+  [ballotAddress, setBallotAddress] = useState("0x76b3DcF1F09b7844e700a690Dd4Ceb43C9b69C65"); // 0xE1cbf3b40c34AE9aDc0390E9c781cD3b4D5FC791
+  [ERC20Address, setERC20Address] = useState("0xc66Ee14eA456826259aB4d1D0043beD38a68D3A3"); // 0xCf90EBBDFD9F348Fc7A3219f4D9C383aE16b2217
   [proposalsList, setProposalsList] = useState([]);
   [proposalNum, setProposalNum] = useState(0);
   [voteAmount, setVoteAmount] = useState(0);
@@ -47,6 +47,7 @@ function PageBody() {
       <VoteAmount></VoteAmount>
       <Vote></Vote>
       <Mint></Mint>
+      <RequestTokens></RequestTokens>
       <Result></Result>
       <Delegate></Delegate>
       <VotingPower></VotingPower>
@@ -77,6 +78,9 @@ function Proposals() {
   const handleChange = (event) => {
     setProposalNum(event.target.value);
   };
+  // useEffect(() => {
+  //   	getProposals(signer);
+  //     }, []);
   return (
     <>
       <h1>Vote</h1>
@@ -265,4 +269,38 @@ async function checkVotingPower(signer, setLoading) {
     throw console.error(error);
   }
   setLoading(false);
+}
+
+function RequestTokens() {
+	const { data: signer } = useSigner();
+	const [txData, setTxData] = useState(null);
+	const [isLoading, setLoading] = useState(false);
+	if (txData) return (
+		<div>
+			<p>Transaction completed!</p>
+			<a href={"https://goerli.etherscan.io/tx/" + txData.hash} target="_blank">{txData.hash}</a>
+		</div>
+	)
+	if (isLoading) return <p>Requesting tokens to be minted...</p>;
+	return (
+		<div>
+      <h3>Request for Tokens</h3>
+			<button onClick={() => requestTokens(signer, "signature", setLoading, setTxData)}>Request Token</button>
+		</div>
+	)
+}
+
+function requestTokens(signer, signature, setLoading, setTxData) {
+	setLoading(true);
+	const requestOptions = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ address: signer._address, signature: signature })
+	};
+	fetch('http://localhost:3001/request-tokens', requestOptions)
+		.then(response => response.json())
+		.then((data) => {
+			setTxData(data);
+			setLoading(true);
+	});
 }
