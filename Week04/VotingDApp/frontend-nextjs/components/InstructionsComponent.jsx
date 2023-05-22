@@ -19,7 +19,7 @@ let votingPower, setVotingPower;
 export default function InstructionsComponent() {
   const router = useRouter();
   [ballotAddress, setBallotAddress] = useState("0x76b3DcF1F09b7844e700a690Dd4Ceb43C9b69C65"); // 0xE1cbf3b40c34AE9aDc0390E9c781cD3b4D5FC791
-  [ERC20Address, setERC20Address] = useState("0xc66Ee14eA456826259aB4d1D0043beD38a68D3A3"); // 0xCf90EBBDFD9F348Fc7A3219f4D9C383aE16b2217
+  [ERC20Address, setERC20Address] = useState("0xaaA84a2aF9dAA7ffF0aabEE183584e4C735Bda84"); // 0xCf90EBBDFD9F348Fc7A3219f4D9C383aE16b2217
   [proposalsList, setProposalsList] = useState([]);
   [proposalNum, setProposalNum] = useState(0);
   [voteAmount, setVoteAmount] = useState(0);
