@@ -192,7 +192,6 @@ function Result() {
       <h1>{winnerName}</h1>
     </>
   );
-  
 }
 
 async function getWinnerName(signer, setLoading) {
