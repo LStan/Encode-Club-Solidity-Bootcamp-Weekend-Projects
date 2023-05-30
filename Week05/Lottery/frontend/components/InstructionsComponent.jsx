@@ -41,8 +41,8 @@ function PageBody() {
 }
 
 function CheckState() {
-  const [currentBlockDate, setCurrentBlockDate] = useState();
-  const [closingTimeDate, setClosingTimeDate] = useState();
+  const [currentBlockDate, setCurrentBlockDate] = useState(new Date());
+  const [closingTimeDate, setClosingTimeDate] = useState(new Date());
   const [check, setCheck] = useState();
   const [contract, setContract] = useState();
   const [isLoading, setLoading] = useState();
@@ -267,7 +267,7 @@ function Bet() {
   const [contract, setContract] = useState();
   const [token, setToken] = useState();
   const [isLoading, setLoading] = useState();
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState(0);
   const { data: signer } = useSigner();
   const handleChange = (event) => {
 	  setAmount(event.target.value);
