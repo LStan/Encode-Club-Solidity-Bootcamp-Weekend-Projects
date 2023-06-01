@@ -17,6 +17,5 @@ The Contract is deployed and checked on eth-goerli[0x40d3989CF95885f6456aCe44beC
 * check owner pool 
 <img width="588" alt="CleanShot 2023-06-01 at 00 06 55@2x" src="https://github.com/LStan/Encode-Club-Solidity-Bootcamp-Weekend-Projects/assets/24606613/b908519a-e42f-4f65-af8a-4e4c59f4090c">
 
-* closing of the bet - 
-* claim prize - 
-* withdraw token - 
+* closing of the bet - https://mumbai.polygonscan.com/tx/0xc98ad9e67593cb3ad3d3c3b1b3ffd1c5cd12b53fa050f6800a3fa090e47db4ac
+* claim prize - https://mumbai.polygonscan.com/tx/0xd1fdab907056985b447cc13d4565fc82d3c0d5f096600eadc5c104f48423536e
