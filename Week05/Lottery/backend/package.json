@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "build": "npx hardhat compile",
-    "deploy-goerli": "npx hardhat run ./scripts/Lottery_deploy.ts --network GOERLI",
-    "deploy-sepolia": "npx hardhat run ./scripts/Lottery_deploy.ts --network SEPOLIA",
+    "deploy-goerli": "npx hardhat run ./scripts/Lottery_deploy.ts --network ETH_GOERLI",
+    "deploy-sepolia": "npx hardhat run ./scripts/Lottery_deploy.ts --network ETH_SEPOLIA",
+    "deploy-mumbai": "npx hardhat run ./scripts/Lottery_deploy.ts --network POLY_MUMBAI",
     "node": "npx hardhat node",
     "deploy-local": "npx hardhat run ./scripts/Lottery_deploy.ts --network localhost"
   },
