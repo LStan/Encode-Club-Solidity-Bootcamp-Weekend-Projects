@@ -30,45 +30,65 @@ function PageBody() {
 
   useEffect(() => {
     if (signer) {
-      let lotteryContract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
+      let lotteryContract = new ethers.Contract(
+        contractAddress,
+        contractJson.abi,
+        signer.provider
+      );
       lotteryContract = lotteryContract.connect(signer);
       setLotteryContract(lotteryContract);
-      let tokenContract = new ethers.Contract(tokenAddress, tokenJson.abi, signer.provider);
+      let tokenContract = new ethers.Contract(
+        tokenAddress,
+        tokenJson.abi,
+        signer.provider
+      );
       tokenContract = tokenContract.connect(signer);
       setTokenContract(tokenContract);
       (async () => {
         const walletAddress = await signer.getAddress();
         setWalletAddress(walletAddress);
-      }) ();
+      })();
     }
   }, [signer]);
 
-  if (!walletAddress) return (
-    <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-  )
+  if (!walletAddress)
+    return (
+      <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
+    );
   return (
     <>
       <CheckState lotteryContract={lotteryContract}></CheckState>
       <OpenBets lotteryContract={lotteryContract}></OpenBets>
       <BuyTokens lotteryContract={lotteryContract}></BuyTokens>
-      <TokenBalance tokenContract={tokenContract} walletAddress={walletAddress}></TokenBalance>
-      <Bet lotteryContract={lotteryContract} tokenContract={tokenContract}></Bet>
+      <TokenBalance
+        tokenContract={tokenContract}
+        walletAddress={walletAddress}
+      ></TokenBalance>
+      <Bet
+        lotteryContract={lotteryContract}
+        tokenContract={tokenContract}
+      ></Bet>
       <CloseLottery lotteryContract={lotteryContract}></CloseLottery>
-      <Prize lotteryContract={lotteryContract} walletAddress={walletAddress}></Prize>
+      <Prize
+        lotteryContract={lotteryContract}
+        walletAddress={walletAddress}
+      ></Prize>
       <Claim lotteryContract={lotteryContract}></Claim>
       <Pool lotteryContract={lotteryContract}></Pool>
       <Withdraw lotteryContract={lotteryContract}></Withdraw>
-      <Burn lotteryContract={lotteryContract} tokenContract={tokenContract}></Burn>
+      <Burn
+        lotteryContract={lotteryContract}
+        tokenContract={tokenContract}
+      ></Burn>
     </>
   );
 }
 
-function CheckState({lotteryContract}) {
+function CheckState({ lotteryContract }) {
   const [currentBlockDate, setCurrentBlockDate] = useState(new Date());
   const [closingTimeDate, setClosingTimeDate] = useState(new Date());
   const [check, setCheck] = useState();
   const [isLoading, setLoading] = useState(false);
-
 
   async function getCheckState() {
     setLoading(true);
@@ -90,7 +110,11 @@ function CheckState({lotteryContract}) {
   return (
     <>
       <h3>Query State</h3>
-      <button onClick={() => { getCheckState(); }}>
+      <button
+        onClick={() => {
+          getCheckState();
+        }}
+      >
         {isLoading ? `Checking status...` : `Check`}
       </button>
       {check === undefined ? null : (
@@ -98,11 +122,14 @@ function CheckState({lotteryContract}) {
           {check ? (
             <>
               <h1>The lottery is open!!!</h1>
-              <h1>The last block was mined at{" "}
-                {currentBlockDate.toLocaleDateString()} :{" "} {currentBlockDate.toLocaleTimeString()}
+              <h1>
+                The last block was mined at{" "}
+                {currentBlockDate.toLocaleDateString()} :{" "}
+                {currentBlockDate.toLocaleTimeString()}
               </h1>
-              <h1>Lottery should close at{" "} 
-                {closingTimeDate.toLocaleDateString()} :{" "} {closingTimeDate.toLocaleTimeString()}
+              <h1>
+                Lottery should close at {closingTimeDate.toLocaleDateString()} :{" "}
+                {closingTimeDate.toLocaleTimeString()}
               </h1>
             </>
           ) : (
@@ -114,7 +141,7 @@ function CheckState({lotteryContract}) {
   );
 }
 
-function OpenBets({lotteryContract}) {
+function OpenBets({ lotteryContract }) {
   const [txData, setTxData] = useState();
   const [isLoading, setLoading] = useState();
   const [duration, setDuration] = useState();
@@ -127,7 +154,9 @@ function OpenBets({lotteryContract}) {
     setLoading(true);
     const provider = lotteryContract.provider;
     const currentBlock = await provider.getBlock("latest");
-    const tx = await lotteryContract.openBets(currentBlock.timestamp + Number(duration));
+    const tx = await lotteryContract.openBets(
+      currentBlock.timestamp + Number(duration)
+    );
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -137,25 +166,38 @@ function OpenBets({lotteryContract}) {
     <>
       <h3>Open Bets</h3>
       <p>Enter duration:</p>
-          <input type="text" id="duration" name="duration" onChange={handleChange} value={duration} />
-          <button onClick={() => { setOpenBets(); } }>
-            {isLoading ? `Wait till the transaction to be completed` : `Open`}
-          </button>
+      <input
+        type="text"
+        id="duration"
+        name="duration"
+        onChange={handleChange}
+        value={duration}
+      />
+      <button
+        onClick={() => {
+          setOpenBets();
+        }}
+      >
+        {isLoading ? `Wait till the transaction to be completed` : `Open`}
+      </button>
       {txData === undefined ? null : (
         <>
           <div>
             <p>Transaction completed!</p>
-            <a href={"https://goerli.etherscan.io/tx/" + txData.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
+              target="_blank"
+            >
               {txData.transactionHash}
             </a>
           </div>
         </>
       )}
     </>
-  );  
+  );
 }
 
-function BuyTokens({lotteryContract}) {
+function BuyTokens({ lotteryContract }) {
   const TOKEN_RATIO = 1;
 
   const [txData, setTxData] = useState();
@@ -180,28 +222,40 @@ function BuyTokens({lotteryContract}) {
     <>
       <h3>Buy Tokens</h3>
       <p>Enter amount:</p>
-      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-      <button onClick={() => { _buyTokens(); } }>
+      <input
+        type="text"
+        id="amount"
+        name="amount"
+        onChange={handleChange}
+        value={amount}
+      />
+      <button
+        onClick={() => {
+          _buyTokens();
+        }}
+      >
         {isLoading ? `Wait till the transaction to be completed` : `Buy`}
       </button>
       {txData === undefined ? null : (
         <>
           <div>
             <p>Transaction completed!</p>
-            <a href={"https://goerli.etherscan.io/tx/" + txData.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
+              target="_blank"
+            >
               {txData.transactionHash}
             </a>
           </div>
         </>
       )}
     </>
-  );  
+  );
 }
 
-function TokenBalance({tokenContract, walletAddress}) {
+function TokenBalance({ tokenContract, walletAddress }) {
   const [isLoading, setLoading] = useState();
   const [balance, setBalance] = useState();
-
 
   async function getTokenBalance() {
     setLoading(true);
@@ -214,7 +268,11 @@ function TokenBalance({tokenContract, walletAddress}) {
   return (
     <>
       <h3>Token Balance</h3>
-      <button onClick={() => { getTokenBalance(); } }>
+      <button
+        onClick={() => {
+          getTokenBalance();
+        }}
+      >
         {isLoading ? `Checking...` : `Check`}
       </button>
       {balance === undefined ? null : (
@@ -225,10 +283,10 @@ function TokenBalance({tokenContract, walletAddress}) {
         </>
       )}
     </>
-  );  
+  );
 }
 
-function Bet({lotteryContract, tokenContract}) {
+function Bet({ lotteryContract, tokenContract }) {
   const [txData, setTxData] = useState();
   const [tx, setTx] = useState();
   const [isLoading, setLoading] = useState();
@@ -244,7 +302,10 @@ function Bet({lotteryContract, tokenContract}) {
     const betFee = await lotteryContract.betFee();
     const approveValue = betPrice.add(betFee).mul(amount);
     console.log(approveValue);
-    const allowTx = await tokenContract.approve(lotteryContract.address, approveValue);
+    const allowTx = await tokenContract.approve(
+      lotteryContract.address,
+      approveValue
+    );
     const allow = await allowTx.wait();
     setTx(allow);
     const tx = await lotteryContract.betMany(amount);
@@ -257,31 +318,46 @@ function Bet({lotteryContract, tokenContract}) {
     <>
       <h3>Bet</h3>
       <p>Enter amount:</p>
-      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-      <button onClick={() => { setBet(); } }>
+      <input
+        type="text"
+        id="amount"
+        name="amount"
+        onChange={handleChange}
+        value={amount}
+      />
+      <button
+        onClick={() => {
+          setBet();
+        }}
+      >
         {isLoading ? `Wait till the transaction to be completed` : `Bet`}
       </button>
       {txData || tx === undefined ? null : (
         <>
           <div>
             <p>Transaction completed!</p>
-            <a href={"https://goerli.etherscan.io/tx/" + tx.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + tx.transactionHash}
+              target="_blank"
+            >
               {tx.transactionHash}
             </a>
-            <a href={"https://goerli.etherscan.io/tx/" + txData.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
+              target="_blank"
+            >
               {txData.transactionHash}
             </a>
           </div>
         </>
       )}
     </>
-  );  
+  );
 }
 
-function CloseLottery({lotteryContract}) {
+function CloseLottery({ lotteryContract }) {
   const [txData, setTxData] = useState();
   const [isLoading, setLoading] = useState();
-
 
   async function setCloseLottery() {
     setLoading(true);
@@ -294,27 +370,33 @@ function CloseLottery({lotteryContract}) {
   return (
     <>
       <h3>Close Lottery</h3>
-      <button onClick={() => { setCloseLottery(); } }>
+      <button
+        onClick={() => {
+          setCloseLottery();
+        }}
+      >
         {isLoading ? `Wait till the transaction to be completed` : `Close`}
       </button>
       {txData === undefined ? null : (
         <>
           <div>
             <p>Transaction completed!</p>
-            <a href={"https://goerli.etherscan.io/tx/" + txData.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
+              target="_blank"
+            >
               {txData.transactionHash}
             </a>
           </div>
         </>
       )}
     </>
-  );  
+  );
 }
 
-function Prize({lotteryContract, walletAddress}) {
+function Prize({ lotteryContract, walletAddress }) {
   const [isLoading, setLoading] = useState();
   const [prize, setPrize] = useState();
-
 
   async function getPrize() {
     setLoading(true);
@@ -327,7 +409,11 @@ function Prize({lotteryContract, walletAddress}) {
   return (
     <>
       <h3>Prize</h3>
-      <button onClick={() => { getPrize(); } }>
+      <button
+        onClick={() => {
+          getPrize();
+        }}
+      >
         {isLoading ? `Checking...` : `Check`}
       </button>
       {prize === undefined ? null : (
@@ -338,10 +424,10 @@ function Prize({lotteryContract, walletAddress}) {
         </>
       )}
     </>
-  );  
+  );
 }
 
-function Claim({lotteryContract}) {
+function Claim({ lotteryContract }) {
   const [txData, setTxData] = useState();
   const [isLoading, setLoading] = useState();
   const [amount, setAmount] = useState(0);
@@ -352,7 +438,9 @@ function Claim({lotteryContract}) {
 
   async function claimPrize() {
     setLoading(true);
-    const tx = await lotteryContract.prizeWithdraw(ethers.utils.parseEther(amount.toString()));
+    const tx = await lotteryContract.prizeWithdraw(
+      ethers.utils.parseEther(amount.toString())
+    );
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -362,28 +450,40 @@ function Claim({lotteryContract}) {
     <>
       <h3>Claim Prize</h3>
       <p>Enter amount:</p>
-      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-      <button onClick={() => { claimPrize(); } }>
+      <input
+        type="text"
+        id="amount"
+        name="amount"
+        onChange={handleChange}
+        value={amount}
+      />
+      <button
+        onClick={() => {
+          claimPrize();
+        }}
+      >
         {isLoading ? `Wait till the transaction to be completed` : `Claim`}
       </button>
       {txData === undefined ? null : (
         <>
           <div>
             <p>Transaction completed!</p>
-            <a href={"https://goerli.etherscan.io/tx/" + txData.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
+              target="_blank"
+            >
               {txData.transactionHash}
             </a>
           </div>
         </>
       )}
     </>
-  );  
+  );
 }
 
-function Pool({lotteryContract}) {
+function Pool({ lotteryContract }) {
   const [isLoading, setLoading] = useState();
   const [pool, setPool] = useState();
-
 
   async function ownerPool() {
     setLoading(true);
@@ -396,7 +496,11 @@ function Pool({lotteryContract}) {
   return (
     <>
       <h3>Owner Pool</h3>
-      <button onClick={() => { ownerPool(); } }>
+      <button
+        onClick={() => {
+          ownerPool();
+        }}
+      >
         {isLoading ? `Checking...` : `Check`}
       </button>
       {pool === undefined ? null : (
@@ -407,10 +511,10 @@ function Pool({lotteryContract}) {
         </>
       )}
     </>
-  );  
+  );
 }
 
-function Withdraw({lotteryContract}) {
+function Withdraw({ lotteryContract }) {
   const [txData, setTxData] = useState();
   const [isLoading, setLoading] = useState();
   const [amount, setAmount] = useState(0);
@@ -421,7 +525,9 @@ function Withdraw({lotteryContract}) {
 
   async function withdrawTokens() {
     setLoading(true);
-    const tx = await lotteryContract.ownerWithdraw(ethers.utils.parseEther(amount.toString()));
+    const tx = await lotteryContract.ownerWithdraw(
+      ethers.utils.parseEther(amount.toString())
+    );
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -431,25 +537,38 @@ function Withdraw({lotteryContract}) {
     <>
       <h3>Withdraw Tokens</h3>
       <p>Enter amount:</p>
-      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-      <button onClick={() => { withdrawTokens(); } }>
+      <input
+        type="text"
+        id="amount"
+        name="amount"
+        onChange={handleChange}
+        value={amount}
+      />
+      <button
+        onClick={() => {
+          withdrawTokens();
+        }}
+      >
         {isLoading ? `Wait till the transaction to be completed` : `Withdraw`}
       </button>
       {txData === undefined ? null : (
         <>
           <div>
             <p>Transaction completed!</p>
-            <a href={"https://goerli.etherscan.io/tx/" + txData.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
+              target="_blank"
+            >
               {txData.transactionHash}
             </a>
           </div>
         </>
       )}
     </>
-  );  
+  );
 }
 
-function Burn({lotteryContract, tokenContract}) {
+function Burn({ lotteryContract, tokenContract }) {
   const [txData, setTxData] = useState();
   const [tx, setTx] = useState();
   const [isLoading, setLoading] = useState();
@@ -461,10 +580,15 @@ function Burn({lotteryContract, tokenContract}) {
 
   async function burnTokens() {
     setLoading(true);
-    const allowTx = await tokenContract.approve(lotteryContract.address, ethers.constants.MaxUint256);
+    const allowTx = await tokenContract.approve(
+      lotteryContract.address,
+      ethers.constants.MaxUint256
+    );
     const allow = await allowTx.wait();
     setTx(allow);
-    const tx = await lotteryContract.returnTokens(ethers.utils.parseEther(amount.toString()));
+    const tx = await lotteryContract.returnTokens(
+      ethers.utils.parseEther(amount.toString())
+    );
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -474,18 +598,34 @@ function Burn({lotteryContract, tokenContract}) {
     <>
       <h3>Burn Tokens</h3>
       <p>Enter amount:</p>
-      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-      <button onClick={() => { burnTokens(); } }>
+      <input
+        type="text"
+        id="amount"
+        name="amount"
+        onChange={handleChange}
+        value={amount}
+      />
+      <button
+        onClick={() => {
+          burnTokens();
+        }}
+      >
         {isLoading ? `Wait till the transaction to be completed` : `Burn`}
       </button>
       {txData === undefined ? null : (
         <>
           <div>
             <p>Transaction completed!</p>
-            <a href={"https://goerli.etherscan.io/tx/" + tx.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + tx.transactionHash}
+              target="_blank"
+            >
               {tx.transactionHash}
             </a>
-            <a href={"https://goerli.etherscan.io/tx/" + txData.transactionHash} target="_blank"> 
+            <a
+              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
+              target="_blank"
+            >
               {txData.transactionHash}
             </a>
           </div>
