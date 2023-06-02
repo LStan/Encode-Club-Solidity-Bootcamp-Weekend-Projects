@@ -92,18 +92,22 @@ function CheckState({ lotteryContract }) {
 
   async function getCheckState() {
     setLoading(true);
-    const state = await lotteryContract.betsOpen();
-    console.log(state);
-    const provider = lotteryContract.provider;
-    const currentBlock = await provider.getBlock("latest");
-    const currentBlockDate = new Date(currentBlock.timestamp * 1000);
-    console.log(currentBlockDate);
-    setCurrentBlockDate(currentBlockDate);
-    const closingTime = await lotteryContract.betsClosingTime();
-    const closingTimeDate = new Date(closingTime.toNumber() * 1000);
-    console.log(closingTimeDate);
-    setClosingTimeDate(closingTimeDate);
-    setCheck(state);
+    try {
+      const state = await lotteryContract.betsOpen();
+      console.log(state);
+      const provider = lotteryContract.provider;
+      const currentBlock = await provider.getBlock("latest");
+      const currentBlockDate = new Date(currentBlock.timestamp * 1000);
+      console.log(currentBlockDate);
+      setCurrentBlockDate(currentBlockDate);
+      const closingTime = await lotteryContract.betsClosingTime();
+      const closingTimeDate = new Date(closingTime.toNumber() * 1000);
+      console.log(closingTimeDate);
+      setClosingTimeDate(closingTimeDate);
+      setCheck(state);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -152,13 +156,17 @@ function OpenBets({ lotteryContract }) {
 
   async function setOpenBets() {
     setLoading(true);
-    const provider = lotteryContract.provider;
-    const currentBlock = await provider.getBlock("latest");
-    const tx = await lotteryContract.openBets(
-      currentBlock.timestamp + Number(duration)
-    );
-    const data = await tx.wait();
-    setTxData(data);
+    try {
+      const provider = lotteryContract.provider;
+      const currentBlock = await provider.getBlock("latest");
+      const tx = await lotteryContract.openBets(
+        currentBlock.timestamp + Number(duration)
+      );
+      const data = await tx.wait();
+      setTxData(data);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -210,11 +218,15 @@ function BuyTokens({ lotteryContract }) {
 
   async function _buyTokens() {
     setLoading(true);
-    const tx = await lotteryContract.purchaseTokens({
-      value: ethers.utils.parseEther(amount.toString()).div(TOKEN_RATIO),
-    });
-    const data = await tx.wait();
-    setTxData(data);
+    try {
+      const tx = await lotteryContract.purchaseTokens({
+        value: ethers.utils.parseEther(amount.toString()).div(TOKEN_RATIO),
+      });
+      const data = await tx.wait();
+      setTxData(data);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -259,9 +271,13 @@ function TokenBalance({ tokenContract, walletAddress }) {
 
   async function getTokenBalance() {
     setLoading(true);
-    const balanceBN = await tokenContract.balanceOf(walletAddress);
-    const balance = ethers.utils.formatEther(balanceBN);
-    setBalance(balance);
+    try {
+      const balanceBN = await tokenContract.balanceOf(walletAddress);
+      const balance = ethers.utils.formatEther(balanceBN);
+      setBalance(balance);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -298,19 +314,23 @@ function Bet({ lotteryContract, tokenContract }) {
 
   async function setBet() {
     setLoading(true);
-    const betPrice = await lotteryContract.betPrice();
-    const betFee = await lotteryContract.betFee();
-    const approveValue = betPrice.add(betFee).mul(amount);
-    console.log(approveValue);
-    const allowTx = await tokenContract.approve(
-      lotteryContract.address,
-      approveValue
-    );
-    const allow = await allowTx.wait();
-    setTx(allow);
-    const tx = await lotteryContract.betMany(amount);
-    const data = await tx.wait();
-    setTxData(data);
+    try {
+      const betPrice = await lotteryContract.betPrice();
+      const betFee = await lotteryContract.betFee();
+      const approveValue = betPrice.add(betFee).mul(amount);
+      console.log(approveValue);
+      const allowTx = await tokenContract.approve(
+        lotteryContract.address,
+        approveValue
+      );
+      const allow = await allowTx.wait();
+      setTx(allow);
+      const tx = await lotteryContract.betMany(amount);
+      const data = await tx.wait();
+      setTxData(data);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -361,9 +381,13 @@ function CloseLottery({ lotteryContract }) {
 
   async function setCloseLottery() {
     setLoading(true);
-    const tx = await lotteryContract.closeLottery();
-    const data = await tx.wait();
-    setTxData(data);
+    try {
+      const tx = await lotteryContract.closeLottery();
+      const data = await tx.wait();
+      setTxData(data);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -400,9 +424,13 @@ function Prize({ lotteryContract, walletAddress }) {
 
   async function getPrize() {
     setLoading(true);
-    const prizeBN = await lotteryContract.prize(walletAddress);
-    const prize = ethers.utils.formatEther(prizeBN);
-    setPrize(prize);
+    try {
+      const prizeBN = await lotteryContract.prize(walletAddress);
+      const prize = ethers.utils.formatEther(prizeBN);
+      setPrize(prize);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -438,11 +466,15 @@ function Claim({ lotteryContract }) {
 
   async function claimPrize() {
     setLoading(true);
-    const tx = await lotteryContract.prizeWithdraw(
-      ethers.utils.parseEther(amount.toString())
-    );
-    const data = await tx.wait();
-    setTxData(data);
+    try {
+      const tx = await lotteryContract.prizeWithdraw(
+        ethers.utils.parseEther(amount.toString())
+      );
+      const data = await tx.wait();
+      setTxData(data);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -487,9 +519,13 @@ function Pool({ lotteryContract }) {
 
   async function ownerPool() {
     setLoading(true);
-    const balanceBN = await lotteryContract.ownerPool();
-    const balance = ethers.utils.formatEther(balanceBN);
-    setPool(balance);
+    try {
+      const balanceBN = await lotteryContract.ownerPool();
+      const balance = ethers.utils.formatEther(balanceBN);
+      setPool(balance);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -525,11 +561,15 @@ function Withdraw({ lotteryContract }) {
 
   async function withdrawTokens() {
     setLoading(true);
-    const tx = await lotteryContract.ownerWithdraw(
-      ethers.utils.parseEther(amount.toString())
-    );
-    const data = await tx.wait();
-    setTxData(data);
+    try {
+      const tx = await lotteryContract.ownerWithdraw(
+        ethers.utils.parseEther(amount.toString())
+      );
+      const data = await tx.wait();
+      setTxData(data);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
@@ -580,17 +620,21 @@ function Burn({ lotteryContract, tokenContract }) {
 
   async function burnTokens() {
     setLoading(true);
-    const allowTx = await tokenContract.approve(
-      lotteryContract.address,
-      ethers.constants.MaxUint256
-    );
-    const allow = await allowTx.wait();
-    setTx(allow);
-    const tx = await lotteryContract.returnTokens(
-      ethers.utils.parseEther(amount.toString())
-    );
-    const data = await tx.wait();
-    setTxData(data);
+    try {
+      const allowTx = await tokenContract.approve(
+        lotteryContract.address,
+        ethers.constants.MaxUint256
+      );
+      const allow = await allowTx.wait();
+      setTx(allow);
+      const tx = await lotteryContract.returnTokens(
+        ethers.utils.parseEther(amount.toString())
+      );
+      const data = await tx.wait();
+      setTxData(data);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   }
 
