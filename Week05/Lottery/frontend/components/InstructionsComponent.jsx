@@ -1,5 +1,5 @@
 import styles from "../styles/InstructionsComponent.module.css";
-import { useSigner } from "wagmi";
+import { useSigner, useNetwork } from "wagmi";
 import { useState, useEffect } from "react";
 import contractJson from "../assets/Lottery.json";
 import tokenJson from "../assets/LotteryToken.json";
@@ -23,66 +23,76 @@ export default function InstructionsComponent() {
 }
 
 function PageBody() {
+  const { data: signer } = useSigner();
+  const [lotteryContract, setLotteryContract] = useState();
+  const [tokenContract, setTokenContract] = useState();
+  const [walletAddress, setWalletAddress] = useState();
+
+  useEffect(() => {
+    if (signer) {
+      let lotteryContract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
+      lotteryContract = lotteryContract.connect(signer);
+      setLotteryContract(lotteryContract);
+      let tokenContract = new ethers.Contract(tokenAddress, tokenJson.abi, signer.provider);
+      tokenContract = tokenContract.connect(signer);
+      setTokenContract(tokenContract);
+      (async () => {
+        const walletAddress = await signer.getAddress();
+        setWalletAddress(walletAddress);
+      }) ();
+    }
+  }, [signer]);
+
+  if (!walletAddress) return (
+    <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
+  )
   return (
     <>
-      <CheckState></CheckState>
-      <OpenBets></OpenBets>
-      <BuyTokens></BuyTokens>
-      <TokenBalance></TokenBalance>
-      <Bet></Bet>
-      <CloseLottery></CloseLottery>
-      <Prize></Prize>
-      <Claim></Claim>
-      <Pool></Pool>
-      <Withdraw></Withdraw>
-      <Burn></Burn>
+      <CheckState lotteryContract={lotteryContract}></CheckState>
+      <OpenBets lotteryContract={lotteryContract}></OpenBets>
+      <BuyTokens lotteryContract={lotteryContract}></BuyTokens>
+      <TokenBalance tokenContract={tokenContract} walletAddress={walletAddress}></TokenBalance>
+      <Bet lotteryContract={lotteryContract} tokenContract={tokenContract}></Bet>
+      <CloseLottery lotteryContract={lotteryContract}></CloseLottery>
+      <Prize lotteryContract={lotteryContract} walletAddress={walletAddress}></Prize>
+      <Claim lotteryContract={lotteryContract}></Claim>
+      <Pool lotteryContract={lotteryContract}></Pool>
+      <Withdraw lotteryContract={lotteryContract}></Withdraw>
+      <Burn lotteryContract={lotteryContract} tokenContract={tokenContract}></Burn>
     </>
   );
 }
 
-function CheckState() {
+function CheckState({lotteryContract}) {
   const [currentBlockDate, setCurrentBlockDate] = useState(new Date());
   const [closingTimeDate, setClosingTimeDate] = useState(new Date());
   const [check, setCheck] = useState();
-  const [contract, setContract] = useState();
-  const [isLoading, setLoading] = useState();
-  const { data: signer } = useSigner();
+  const [isLoading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
 
   async function getCheckState() {
     setLoading(true);
-    const state = await contract.connect(signer).betsOpen();
+    const state = await lotteryContract.betsOpen();
     console.log(state);
-    setCheck(state);
-    const provider = contract.provider;
+    const provider = lotteryContract.provider;
     const currentBlock = await provider.getBlock("latest");
     const currentBlockDate = new Date(currentBlock.timestamp * 1000);
     console.log(currentBlockDate);
     setCurrentBlockDate(currentBlockDate);
-    const closingTime = await contract.connect(signer).betsClosingTime();
+    const closingTime = await lotteryContract.betsClosingTime();
     const closingTimeDate = new Date(closingTime.toNumber() * 1000);
     console.log(closingTimeDate);
     setClosingTimeDate(closingTimeDate);
+    setCheck(state);
     setLoading(false);
   }
 
   return (
     <>
       <h3>Query State</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <button onClick={() => { getCheckState(); }}>
-          {isLoading ? `Checking status...` : `Check`}
-        </button>
-      )}
-      {isLoading}
+      <button onClick={() => { getCheckState(); }}>
+        {isLoading ? `Checking status...` : `Check`}
+      </button>
       {check === undefined ? null : (
         <>
           {check ? (
@@ -104,28 +114,20 @@ function CheckState() {
   );
 }
 
-function OpenBets() {
+function OpenBets({lotteryContract}) {
   const [txData, setTxData] = useState();
-  const [contract, setContract] = useState();
   const [isLoading, setLoading] = useState();
   const [duration, setDuration] = useState();
-  const { data: signer } = useSigner();
-  const handleChange = (event) => {
-	  setDuration(event.target.value);
-	};
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
+  const handleChange = (event) => {
+    setDuration(event.target.value);
+  };
 
   async function setOpenBets() {
     setLoading(true);
-    const provider = contract.provider;
+    const provider = lotteryContract.provider;
     const currentBlock = await provider.getBlock("latest");
-    const tx = await contract.connect(signer).openBets(currentBlock.timestamp + Number(duration));
+    const tx = await lotteryContract.openBets(currentBlock.timestamp + Number(duration));
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -134,18 +136,11 @@ function OpenBets() {
   return (
     <>
       <h3>Open Bets</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <p>Enter duration:</p>
+      <p>Enter duration:</p>
           <input type="text" id="duration" name="duration" onChange={handleChange} value={duration} />
           <button onClick={() => { setOpenBets(); } }>
             {isLoading ? `Wait till the transaction to be completed` : `Open`}
           </button>
-        </>
-      )}
-      {isLoading}
       {txData === undefined ? null : (
         <>
           <div>
@@ -160,27 +155,21 @@ function OpenBets() {
   );  
 }
 
-function BuyTokens() {
-  const [txData, setTxData] = useState();
-  const [contract, setContract] = useState();
-  const [isLoading, setLoading] = useState();
-  const [amount, setAmount] = useState();
-  const { data: signer } = useSigner();
-  const handleChange = (event) => {
-	  setAmount(event.target.value);
-	};
+function BuyTokens({lotteryContract}) {
+  const TOKEN_RATIO = 1;
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
+  const [txData, setTxData] = useState();
+  const [isLoading, setLoading] = useState();
+  const [amount, setAmount] = useState(0);
+
+  const handleChange = (event) => {
+    setAmount(event.target.value);
+  };
 
   async function _buyTokens() {
     setLoading(true);
-    const tx = await contract.connect(signer).purchaseTokens({
-      value: ethers.utils.parseEther(amount).div(1),
+    const tx = await lotteryContract.purchaseTokens({
+      value: ethers.utils.parseEther(amount.toString()).div(TOKEN_RATIO),
     });
     const data = await tx.wait();
     setTxData(data);
@@ -190,18 +179,11 @@ function BuyTokens() {
   return (
     <>
       <h3>Buy Tokens</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <p>Enter amount:</p>
-          <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-          <button onClick={() => { _buyTokens(); } }>
-            {isLoading ? `Wait till the transaction to be completed` : `Buy`}
-          </button>
-        </>
-      )}
-      {isLoading}
+      <p>Enter amount:</p>
+      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
+      <button onClick={() => { _buyTokens(); } }>
+        {isLoading ? `Wait till the transaction to be completed` : `Buy`}
+      </button>
       {txData === undefined ? null : (
         <>
           <div>
@@ -216,22 +198,14 @@ function BuyTokens() {
   );  
 }
 
-function TokenBalance() {
-  const [contract, setContract] = useState();
+function TokenBalance({tokenContract, walletAddress}) {
   const [isLoading, setLoading] = useState();
   const [balance, setBalance] = useState();
-  const { data: signer } = useSigner();
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(tokenAddress, tokenJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
 
   async function getTokenBalance() {
     setLoading(true);
-    const balanceBN = await contract.connect(signer).balanceOf(signer._address);
+    const balanceBN = await tokenContract.balanceOf(walletAddress);
     const balance = ethers.utils.formatEther(balanceBN);
     setBalance(balance);
     setLoading(false);
@@ -240,16 +214,9 @@ function TokenBalance() {
   return (
     <>
       <h3>Token Balance</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <button onClick={() => { getTokenBalance(); } }>
-            {isLoading ? `Checking...` : `Check`}
-          </button>
-        </>
-      )}
-      {isLoading}
+      <button onClick={() => { getTokenBalance(); } }>
+        {isLoading ? `Checking...` : `Check`}
+      </button>
       {balance === undefined ? null : (
         <>
           <div>
@@ -261,33 +228,26 @@ function TokenBalance() {
   );  
 }
 
-function Bet() {
+function Bet({lotteryContract, tokenContract}) {
   const [txData, setTxData] = useState();
   const [tx, setTx] = useState();
-  const [contract, setContract] = useState();
-  const [token, setToken] = useState();
   const [isLoading, setLoading] = useState();
   const [amount, setAmount] = useState(0);
-  const { data: signer } = useSigner();
-  const handleChange = (event) => {
-	  setAmount(event.target.value);
-	};
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-      const token = new ethers.Contract(tokenAddress, tokenJson.abi, signer.provider);
-      setToken(token);
-    }
-  }, [signer]);
+  const handleChange = (event) => {
+    setAmount(event.target.value);
+  };
 
   async function setBet() {
     setLoading(true);
-    const allowTx = await token.connect(signer).approve(contract.address, ethers.constants.MaxUint256);
+    const betPrice = await lotteryContract.betPrice();
+    const betFee = await lotteryContract.betFee();
+    const approveValue = betPrice.add(betFee).mul(amount);
+    console.log(approveValue);
+    const allowTx = await tokenContract.approve(lotteryContract.address, approveValue);
     const allow = await allowTx.wait();
     setTx(allow);
-    const tx = await contract.connect(signer).betMany(amount);
+    const tx = await lotteryContract.betMany(amount);
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -296,18 +256,11 @@ function Bet() {
   return (
     <>
       <h3>Bet</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <p>Enter amount:</p>
-          <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-          <button onClick={() => { setBet(); } }>
-            {isLoading ? `Wait till the transaction to be completed` : `Bet`}
-          </button>
-        </>
-      )}
-      {isLoading}
+      <p>Enter amount:</p>
+      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
+      <button onClick={() => { setBet(); } }>
+        {isLoading ? `Wait till the transaction to be completed` : `Bet`}
+      </button>
       {txData || tx === undefined ? null : (
         <>
           <div>
@@ -325,22 +278,14 @@ function Bet() {
   );  
 }
 
-function CloseLottery() {
+function CloseLottery({lotteryContract}) {
   const [txData, setTxData] = useState();
-  const [contract, setContract] = useState();
   const [isLoading, setLoading] = useState();
-  const { data: signer } = useSigner();
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
 
   async function setCloseLottery() {
     setLoading(true);
-    const tx = await contract.connect(signer).closeLottery();
+    const tx = await lotteryContract.closeLottery();
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -349,14 +294,9 @@ function CloseLottery() {
   return (
     <>
       <h3>Close Lottery</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-          <button onClick={() => { setCloseLottery(); } }>
-            {isLoading ? `Wait till the transaction to be completed` : `Close`}
-          </button>
-      )}
-      {isLoading}
+      <button onClick={() => { setCloseLottery(); } }>
+        {isLoading ? `Wait till the transaction to be completed` : `Close`}
+      </button>
       {txData === undefined ? null : (
         <>
           <div>
@@ -371,22 +311,14 @@ function CloseLottery() {
   );  
 }
 
-function Prize() {
-  const [contract, setContract] = useState();
+function Prize({lotteryContract, walletAddress}) {
   const [isLoading, setLoading] = useState();
   const [prize, setPrize] = useState();
-  const { data: signer } = useSigner();
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
 
   async function getPrize() {
     setLoading(true);
-    const prizeBN = await contract.connect(signer).prize(signer._address);
+    const prizeBN = await lotteryContract.prize(walletAddress);
     const prize = ethers.utils.formatEther(prizeBN);
     setPrize(prize);
     setLoading(false);
@@ -395,16 +327,9 @@ function Prize() {
   return (
     <>
       <h3>Prize</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <button onClick={() => { getPrize(); } }>
-            {isLoading ? `Checking...` : `Check`}
-          </button>
-        </>
-      )}
-      {isLoading}
+      <button onClick={() => { getPrize(); } }>
+        {isLoading ? `Checking...` : `Check`}
+      </button>
       {prize === undefined ? null : (
         <>
           <div>
@@ -416,26 +341,18 @@ function Prize() {
   );  
 }
 
-function Claim() {
+function Claim({lotteryContract}) {
   const [txData, setTxData] = useState();
-  const [contract, setContract] = useState();
   const [isLoading, setLoading] = useState();
-  const [amount, setAmount] = useState();
-  const { data: signer } = useSigner();
-  const handleChange = (event) => {
-	  setAmount(event.target.value);
-	};
+  const [amount, setAmount] = useState(0);
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
+  const handleChange = (event) => {
+    setAmount(event.target.value);
+  };
 
   async function claimPrize() {
     setLoading(true);
-    const tx = await contract.connect(signer).prizeWithdraw(ethers.utils.parseEther(amount));
+    const tx = await lotteryContract.prizeWithdraw(ethers.utils.parseEther(amount.toString()));
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -444,18 +361,11 @@ function Claim() {
   return (
     <>
       <h3>Claim Prize</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <p>Enter amount:</p>
-          <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-          <button onClick={() => { claimPrize(); } }>
-            {isLoading ? `Wait till the transaction to be completed` : `Claim`}
-          </button>
-        </>
-      )}
-      {isLoading}
+      <p>Enter amount:</p>
+      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
+      <button onClick={() => { claimPrize(); } }>
+        {isLoading ? `Wait till the transaction to be completed` : `Claim`}
+      </button>
       {txData === undefined ? null : (
         <>
           <div>
@@ -470,22 +380,14 @@ function Claim() {
   );  
 }
 
-function Pool() {
-  const [contract, setContract] = useState();
+function Pool({lotteryContract}) {
   const [isLoading, setLoading] = useState();
   const [pool, setPool] = useState();
-  const { data: signer } = useSigner();
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
 
   async function ownerPool() {
     setLoading(true);
-    const balanceBN = await contract.connect(signer).ownerPool();
+    const balanceBN = await lotteryContract.ownerPool();
     const balance = ethers.utils.formatEther(balanceBN);
     setPool(balance);
     setLoading(false);
@@ -494,16 +396,9 @@ function Pool() {
   return (
     <>
       <h3>Owner Pool</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <button onClick={() => { ownerPool(); } }>
-            {isLoading ? `Checking...` : `Check`}
-          </button>
-        </>
-      )}
-      {isLoading}
+      <button onClick={() => { ownerPool(); } }>
+        {isLoading ? `Checking...` : `Check`}
+      </button>
       {pool === undefined ? null : (
         <>
           <div>
@@ -515,26 +410,18 @@ function Pool() {
   );  
 }
 
-function Withdraw() {
+function Withdraw({lotteryContract}) {
   const [txData, setTxData] = useState();
-  const [contract, setContract] = useState();
   const [isLoading, setLoading] = useState();
-  const [amount, setAmount] = useState();
-  const { data: signer } = useSigner();
-  const handleChange = (event) => {
-	  setAmount(event.target.value);
-	};
+  const [amount, setAmount] = useState(0);
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-    }
-  }, [signer]);
+  const handleChange = (event) => {
+    setAmount(event.target.value);
+  };
 
   async function withdrawTokens() {
     setLoading(true);
-    const tx = await contract.connect(signer).ownerWithdraw(ethers.utils.parseEther(amount));
+    const tx = await lotteryContract.ownerWithdraw(ethers.utils.parseEther(amount.toString()));
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -543,18 +430,11 @@ function Withdraw() {
   return (
     <>
       <h3>Withdraw Tokens</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <p>Enter amount:</p>
-          <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-          <button onClick={() => { withdrawTokens(); } }>
-            {isLoading ? `Wait till the transaction to be completed` : `Withdraw`}
-          </button>
-        </>
-      )}
-      {isLoading}
+      <p>Enter amount:</p>
+      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
+      <button onClick={() => { withdrawTokens(); } }>
+        {isLoading ? `Wait till the transaction to be completed` : `Withdraw`}
+      </button>
       {txData === undefined ? null : (
         <>
           <div>
@@ -569,33 +449,22 @@ function Withdraw() {
   );  
 }
 
-function Burn() {
+function Burn({lotteryContract, tokenContract}) {
   const [txData, setTxData] = useState();
   const [tx, setTx] = useState();
-  const [contract, setContract] = useState();
-  const [token, setToken] = useState();
   const [isLoading, setLoading] = useState();
-  const [amount, setAmount] = useState();
-  const { data: signer } = useSigner();
-  const handleChange = (event) => {
-	  setAmount(event.target.value);
-	};
+  const [amount, setAmount] = useState(0);
 
-  useEffect(() => {
-    if (signer) {
-      const contract = new ethers.Contract(contractAddress, contractJson.abi, signer.provider);
-      setContract(contract);
-      const token = new ethers.Contract(tokenAddress, tokenJson.abi, signer.provider);
-      setToken(token);
-    }
-  }, [signer]);
+  const handleChange = (event) => {
+    setAmount(event.target.value);
+  };
 
   async function burnTokens() {
     setLoading(true);
-    const allowTx = await token.connect(signer).approve(contract.address, ethers.constants.MaxUint256);
+    const allowTx = await tokenContract.approve(lotteryContract.address, ethers.constants.MaxUint256);
     const allow = await allowTx.wait();
     setTx(allow);
-    const tx = await contract.connect(signer).returnTokens(ethers.utils.parseEther(amount));
+    const tx = await lotteryContract.returnTokens(ethers.utils.parseEther(amount.toString()));
     const data = await tx.wait();
     setTxData(data);
     setLoading(false);
@@ -604,19 +473,12 @@ function Burn() {
   return (
     <>
       <h3>Burn Tokens</h3>
-      {!signer ? (
-        <p style={{ color: "red", fontWeight: "bold" }}> Please connect wallet</p>
-      ) : (
-        <>
-          <p>Enter amount:</p>
-          <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
-          <button onClick={() => { burnTokens(); } }>
-            {isLoading ? `Wait till the transaction to be completed` : `Burn`}
-          </button>
-        </>
-      )}
-      {isLoading}
-      {txData || tx === undefined ? null : (
+      <p>Enter amount:</p>
+      <input type="text" id="amount" name="amount" onChange={handleChange} value={amount} />
+      <button onClick={() => { burnTokens(); } }>
+        {isLoading ? `Wait till the transaction to be completed` : `Burn`}
+      </button>
+      {txData === undefined ? null : (
         <>
           <div>
             <p>Transaction completed!</p>
@@ -630,5 +492,5 @@ function Burn() {
         </>
       )}
     </>
-  );  
+  );
 }
