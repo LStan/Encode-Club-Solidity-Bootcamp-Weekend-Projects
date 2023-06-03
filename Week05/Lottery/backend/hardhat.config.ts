@@ -16,7 +16,7 @@ const config: HardhatUserConfig = {
     hardhat: {},
     ETH_GOERLI: {
       accounts: [`${process.env.PRIVATE_KEY}`],
-      url: `https://eth-goerli.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+      url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
     },
     ETH_SEPOLIA: {
       accounts: [`${process.env.PRIVATE_KEY}`],

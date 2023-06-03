@@ -1,12 +1,9 @@
 import styles from "../styles/InstructionsComponent.module.css";
 import { useSigner, useNetwork } from "wagmi";
 import { useState, useEffect } from "react";
-import contractJson from "../assets/Lottery.json";
-import tokenJson from "../assets/LotteryToken.json";
 import { ethers } from "ethers";
-
-const contractAddress = "0x40d3989CF95885f6456aCe44beC69Ac198Eb06F9";
-const tokenAddress = "0x2545A4069DE81cd1f20569946B6023998Cf4A7DA";
+import { getLotteryContract, getTokenContract } from "../assets/utils";
+import Transaction from "./Transaction";
 
 export default function InstructionsComponent() {
   return (
@@ -27,29 +24,20 @@ function PageBody() {
   const [lotteryContract, setLotteryContract] = useState();
   const [tokenContract, setTokenContract] = useState();
   const [walletAddress, setWalletAddress] = useState();
+  const { chain, chains } = useNetwork();
 
   useEffect(() => {
-    if (signer) {
-      let lotteryContract = new ethers.Contract(
-        contractAddress,
-        contractJson.abi,
-        signer.provider
-      );
-      lotteryContract = lotteryContract.connect(signer);
+    if (signer && chain) {
+      const lotteryContract = getLotteryContract(signer, chain);
       setLotteryContract(lotteryContract);
-      let tokenContract = new ethers.Contract(
-        tokenAddress,
-        tokenJson.abi,
-        signer.provider
-      );
-      tokenContract = tokenContract.connect(signer);
+      const tokenContract = getTokenContract(signer, chain);
       setTokenContract(tokenContract);
       (async () => {
         const walletAddress = await signer.getAddress();
         setWalletAddress(walletAddress);
       })();
     }
-  }, [signer]);
+  }, [signer, chain]);
 
   if (!walletAddress)
     return (
@@ -188,19 +176,7 @@ function OpenBets({ lotteryContract }) {
       >
         {isLoading ? `Wait till the transaction to be completed` : `Open`}
       </button>
-      {txData === undefined ? null : (
-        <>
-          <div>
-            <p>Transaction completed!</p>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
-              target="_blank"
-            >
-              {txData.transactionHash}
-            </a>
-          </div>
-        </>
-      )}
+      {txData && <Transaction transaction={txData} />}
     </>
   );
 }
@@ -248,19 +224,7 @@ function BuyTokens({ lotteryContract }) {
       >
         {isLoading ? `Wait till the transaction to be completed` : `Buy`}
       </button>
-      {txData === undefined ? null : (
-        <>
-          <div>
-            <p>Transaction completed!</p>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
-              target="_blank"
-            >
-              {txData.transactionHash}
-            </a>
-          </div>
-        </>
-      )}
+      {txData && <Transaction transaction={txData} />}
     </>
   );
 }
@@ -352,25 +316,8 @@ function Bet({ lotteryContract, tokenContract }) {
       >
         {isLoading ? `Wait till the transaction to be completed` : `Bet`}
       </button>
-      {txData || tx === undefined ? null : (
-        <>
-          <div>
-            <p>Transaction completed!</p>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + tx.transactionHash}
-              target="_blank"
-            >
-              {tx.transactionHash}
-            </a>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
-              target="_blank"
-            >
-              {txData.transactionHash}
-            </a>
-          </div>
-        </>
-      )}
+      {tx && <Transaction transaction={tx} />}
+      {txData && <Transaction transaction={txData} />}
     </>
   );
 }
@@ -401,19 +348,7 @@ function CloseLottery({ lotteryContract }) {
       >
         {isLoading ? `Wait till the transaction to be completed` : `Close`}
       </button>
-      {txData === undefined ? null : (
-        <>
-          <div>
-            <p>Transaction completed!</p>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
-              target="_blank"
-            >
-              {txData.transactionHash}
-            </a>
-          </div>
-        </>
-      )}
+      {txData && <Transaction transaction={txData} />}
     </>
   );
 }
@@ -496,19 +431,7 @@ function Claim({ lotteryContract }) {
       >
         {isLoading ? `Wait till the transaction to be completed` : `Claim`}
       </button>
-      {txData === undefined ? null : (
-        <>
-          <div>
-            <p>Transaction completed!</p>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
-              target="_blank"
-            >
-              {txData.transactionHash}
-            </a>
-          </div>
-        </>
-      )}
+      {txData && <Transaction transaction={txData} />}
     </>
   );
 }
@@ -591,19 +514,7 @@ function Withdraw({ lotteryContract }) {
       >
         {isLoading ? `Wait till the transaction to be completed` : `Withdraw`}
       </button>
-      {txData === undefined ? null : (
-        <>
-          <div>
-            <p>Transaction completed!</p>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
-              target="_blank"
-            >
-              {txData.transactionHash}
-            </a>
-          </div>
-        </>
-      )}
+      {txData && <Transaction transaction={txData} />}
     </>
   );
 }
@@ -623,7 +534,7 @@ function Burn({ lotteryContract, tokenContract }) {
     try {
       const allowTx = await tokenContract.approve(
         lotteryContract.address,
-        ethers.constants.MaxUint256
+        ethers.utils.parseEther(amount.toString())
       );
       const allow = await allowTx.wait();
       setTx(allow);
@@ -656,25 +567,8 @@ function Burn({ lotteryContract, tokenContract }) {
       >
         {isLoading ? `Wait till the transaction to be completed` : `Burn`}
       </button>
-      {txData === undefined ? null : (
-        <>
-          <div>
-            <p>Transaction completed!</p>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + tx.transactionHash}
-              target="_blank"
-            >
-              {tx.transactionHash}
-            </a>
-            <a
-              href={"https://goerli.etherscan.io/tx/" + txData.transactionHash}
-              target="_blank"
-            >
-              {txData.transactionHash}
-            </a>
-          </div>
-        </>
-      )}
+      {tx && <Transaction transaction={tx} />}
+      {txData && <Transaction transaction={txData} />}
     </>
   );
 }
