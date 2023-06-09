@@ -32,6 +32,9 @@ function MyApp({ Component, pageProps }) {
     onConnect({ address, connector, isReconnected }) {
       if (!isReconnected) router.reload();
     },
+    onDisconnect() {
+      router.reload();
+    }
   });
   return (
     <WagmiConfig client={wagmiClient}>
