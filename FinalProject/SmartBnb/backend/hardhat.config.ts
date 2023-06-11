@@ -7,7 +7,7 @@ const config: HardhatUserConfig = {
     version: "0.8.18",
     settings: {
       optimizer: {
-        runs: 100,
+        runs: 200,
         enabled: true,
       },
     },
@@ -23,6 +23,10 @@ const config: HardhatUserConfig = {
     POLY_MUMBAI: {
       accounts: [`${process.env.PRIVATE_KEY}`],
       url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+    },
+    ETH_GOERLI: {
+      accounts: [`${process.env.PRIVATE_KEY}`],
+      url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
     },
   },
   etherscan: {

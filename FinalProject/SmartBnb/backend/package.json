@@ -7,7 +7,8 @@
     "deploy-sepolia": "npx hardhat run ./scripts/deploy.ts --network ETH_SEPOLIA",
     "deploy-mumbai": "npx hardhat run ./scripts/deploy.ts --network POLY_MUMBAI",
     "node": "npx hardhat node",
-    "deploy-local": "npx hardhat run ./scripts/deploy.ts --network localhost"
+    "deploy-local": "npx hardhat run ./scripts/deploy.ts --network localhost",
+    "deploy-goerli": "npx hardhat run ./scripts/deploy.ts --network ETH_GOERLI"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
