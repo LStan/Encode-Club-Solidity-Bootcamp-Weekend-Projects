@@ -5,8 +5,7 @@ import { publicProvider } from "wagmi/providers/public";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { ethers } from "ethers";
 
-const SMARTBNB_CONTRACT_ADDRESS_LOCALHOST =
-  "0x40d3989CF95885f6456aCe44beC69Ac198Eb06F9";
+const SMARTBNB_CONTRACT_ADDRESS_LOCALHOST = "0x40d3989CF95885f6456aCe44beC69Ac198Eb06F9";
 
 const SMARTBNB_CONTRACT_ADDRESS_GOERLI = "0x5712DE56c5E00CE7223D6554617700B988DA1E5D";
 
@@ -71,4 +70,17 @@ export function getChainsConfig(apiKey) {
     }),
     publicProvider(),
   ]);
+}
+
+export function getTransactionLink(transaction, chain) {
+  switch (chain.network) {
+    case "goerli":
+      return "https://goerli.etherscan.io/tx/" + transaction.transactionHash;
+    case "sepolia":
+      return "https://sepolia.etherscan.io/tx/" + transaction.transactionHash;
+    case "maticmum":
+      return "https://mumbai.polygonscan.com/" + transaction.transactionHash;
+    default:
+      throw new Error("Unknown network!");
+  }
 }

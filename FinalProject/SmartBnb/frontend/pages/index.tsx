@@ -1,11 +1,21 @@
 import styles from "../styles/Home.module.css";
-import home from "../components/home";
+import PageBody from "../components/PageBody";
 
 
 export default function Home() {
   return (
     <div>
-      <Home/>
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <header className={styles.header_container}>
+            <h1>Smart BnB</h1>
+          </header>
+          <div className={styles.buttons_container}>
+            <PageBody></PageBody>
+          </div>
+          <div className={styles.footer}>Group 4</div>
+        </div>
+      </main>
     </div>
   );
 }
