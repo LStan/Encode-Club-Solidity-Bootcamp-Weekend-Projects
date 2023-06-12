@@ -1,10 +1,9 @@
 import React from "react";
 import "../styles/Home.module.css";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import bg from "../public/frontpagebg2.png";
 import { Select, DatePicker, Input, Button } from "web3uikit";
 import { useState } from "react";
-
 
 const Home = () => {
   const [checkIn, setCheckIn] = useState(new Date());
@@ -50,7 +49,9 @@ const Home = () => {
                   id: "la",
                   label: "Los Angeles",
                 },
-              ]} name={""}            />
+              ]}
+              name={""}
+            />
           </div>
           <div className="vl" />
           <div className="inputs">
@@ -78,15 +79,12 @@ const Home = () => {
               onChange={(event) => setGuests(Number(event.target.value))}
             />
           </div>
-          <Link to={"/rentals"} state={{
-            destination: destination,
-            checkIn: checkIn,
-            checkOut: checkOut,
-            guests: guests
-          }}>
-          <div className="searchButton">
-            {/* <Icon fill="#ffffff" size={24} svg="search" /> */}
-          </div>
+          <Link
+            href={`/rentals?destination=${destination}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`}
+          >
+            <div className="searchButton">
+              {/* <Icon fill="#ffffff" size={24} svg="search" /> */}
+            </div>
           </Link>
         </div>
       </div>

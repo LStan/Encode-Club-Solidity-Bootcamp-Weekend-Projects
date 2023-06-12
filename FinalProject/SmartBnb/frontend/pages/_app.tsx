@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }) {
     },
     onDisconnect() {
       router.reload();
-    }
+    },
   });
   return (
     <WagmiConfig client={wagmiClient}>

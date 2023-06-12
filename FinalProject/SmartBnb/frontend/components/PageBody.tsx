@@ -1,12 +1,13 @@
 import { useSigner, useNetwork } from "wagmi";
 import { useState, useEffect } from "react";
 import { getSmartBnbContract } from "../assets/utils";
-import Home from "../components/Home";
+import Home from "../components/home";
+import { ethers } from "ethers";
 
 export default function PageBody() {
   const { data: signer } = useSigner();
-  const [smartBnbContract, setSmartBnbContract] = useState();
-  const [walletAddress, setWalletAddress] = useState();
+  const [smartBnbContract, setSmartBnbContract] = useState(null);
+  const [walletAddress, setWalletAddress] = useState("");
   const { chain, chains } = useNetwork();
 
   useEffect(() => {
