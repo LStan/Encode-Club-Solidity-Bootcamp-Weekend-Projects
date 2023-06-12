@@ -8,11 +8,13 @@
     "deploy-mumbai": "npx hardhat run ./scripts/deploy.ts --network POLY_MUMBAI",
     "node": "npx hardhat node",
     "deploy-local": "npx hardhat run ./scripts/deploy.ts --network localhost",
-    "deploy-goerli": "npx hardhat run ./scripts/deploy.ts --network ETH_GOERLI"
+    "deploy-goerli": "npx hardhat run ./scripts/deploy.ts --network ETH_GOERLI",
+    "upload": "npx ts-node ./scripts/upload2ipfs.ts"
   },
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "@openzeppelin/contracts": "^4.9.0"
+    "@openzeppelin/contracts": "^4.9.0",
+    "@thirdweb-dev/storage": "^1.1.4",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",

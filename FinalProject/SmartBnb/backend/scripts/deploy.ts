@@ -1,4 +1,5 @@
 import { ethers } from "hardhat";
+import rentalList from "./sampleRentalList.json";
 
 const LISTING_FEE = 0.0001;
 
@@ -11,6 +12,22 @@ async function main() {
   await contract.deployed();
 
   console.log("Deployed to:", contract.address);
+
+  for (let rental of rentalList) {
+    await contract.addRental(
+      rental.name,
+      rental.city,
+      rental.lat,
+      rental.long,
+      rental.description,
+      rental.imgUrl,
+      rental.maxGuests,
+      ethers.utils.parseEther(rental.pricePerDay.toFixed(18)),
+      {
+        value: ethers.utils.parseEther(LISTING_FEE.toFixed(18)),
+      }
+    );
+  }
 }
 
 main().catch((error) => {
