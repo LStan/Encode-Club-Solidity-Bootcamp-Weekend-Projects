@@ -1,5 +1,5 @@
 import contractJson from "./SmartBnb.json";
-import { localhost, sepolia, polygonMumbai } from "wagmi/chains";
+import { localhost, sepolia, polygonMumbai, goerli } from "wagmi/chains";
 import { configureChains } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
@@ -7,6 +7,8 @@ import { ethers } from "ethers";
 
 const SMARTBNB_CONTRACT_ADDRESS_LOCALHOST =
   "0x40d3989CF95885f6456aCe44beC69Ac198Eb06F9";
+
+const SMARTBNB_CONTRACT_ADDRESS_GOERLI = "0x5712DE56c5E00CE7223D6554617700B988DA1E5D";
 
 const SMARTBNB_CONTRACT_ADDRESS_MUMBAI = "";
 
@@ -20,6 +22,8 @@ export function getSmartBnbContract(signer, chain) {
         contractJson.abi,
         signer
       );
+    case "goerli":
+      return new ethers.Contract(SMARTBNB_CONTRACT_ADDRESS_GOERLI, contractJson.abi, signer);
     case "sepolia":
       return new ethers.Contract(
         SMARTBNB_CONTRACT_ADDRESS_MUMBAI,
@@ -38,7 +42,7 @@ export function getSmartBnbContract(signer, chain) {
 }
 
 export function getSupportedChains() {
-  return [localhost, sepolia, polygonMumbai];
+  return [localhost, goerli, sepolia, polygonMumbai];
 }
 
 export function getChainsConfig(apiKey) {
@@ -50,6 +54,8 @@ export function getChainsConfig(apiKey) {
           case "localhost":
             rpcUrl = `https://localhost:8545/`;
             break;
+          case "goerli":
+            rpcUrl = `https://eth-goerli.g.alchemy.com/v2/${apiKey}`;
           case "sepolia":
             rpcUrl = `https://eth-sepolia.g.alchemy.com/v2/${apiKey}`;
             break;

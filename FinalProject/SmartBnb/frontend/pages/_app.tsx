@@ -1,9 +1,10 @@
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { createClient, WagmiConfig } from "wagmi";
+import { createClient, useAccount, WagmiConfig } from "wagmi";
 import MainLayout from "../layout/mainLayout";
 import { getChainsConfig } from "../assets/utils";
+import { useRouter } from "next/router";
 
 const { chains, provider } = getChainsConfig(process.env.ALCHEMY_API_KEY);
 
@@ -18,7 +19,18 @@ const wagmiClient = createClient({
   provider,
 });
 
+export { WagmiConfig, RainbowKitProvider };
+
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
+  const account = useAccount({
+    onConnect({ address, connector, isReconnected }) {
+      if (!isReconnected) router.reload();
+    },
+    onDisconnect() {
+      router.reload();
+    }
+  });
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider modalSize="compact" chains={chains}>
