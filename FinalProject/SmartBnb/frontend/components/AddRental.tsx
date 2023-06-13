@@ -18,25 +18,24 @@ function AddRental() {
     lat: "",
     long: "",
     description: "",
-    imageUrl: null,
+    imgUrl: null,
     maxGuests: 0,
     pricePerDay: 0,
   });
 
-
   const { data: signer } = useSigner();
   const { chain, chains } = useNetwork();
 
-    const addRental = async () => {
+  const addRental = async () => {
     console.log(formInput);
 
     try {
       notify({
         type: "info",
-        title: "Trying to book...",
+        title: "Trying to add...",
         position: "topL",
       });
-      const uploadUrl = await storage.upload(formInput.imageUrl, {
+      const uploadUrl = await storage.upload(formInput.imgUrl, {
         uploadWithoutDirectory: true,
       });
       console.log(uploadUrl);
@@ -61,8 +60,7 @@ function AddRental() {
       console.log("OK");
       notify({
         type: "success",
-        message: `You are going to ${formInput.city}!`,
-        title: "Booking Succesful",
+        title: "Succesfully added",
         position: "topL",
       });
     } catch (error) {
@@ -70,7 +68,7 @@ function AddRental() {
       notify({
         type: "error",
         message: `${error.reason}`,
-        title: "Booking Failed",
+        title: "Failed to add rental",
         position: "topL",
       });
     }
@@ -214,7 +212,7 @@ function AddRental() {
           title="Chooser"
           onChange={(e) => {
             if (e.target.files) {
-              setFormInput({ ...formInput, imageUrl: e.target.files[0] });
+              setFormInput({ ...formInput, imgUrl: e.target.files[0] });
             }
           }}
         />

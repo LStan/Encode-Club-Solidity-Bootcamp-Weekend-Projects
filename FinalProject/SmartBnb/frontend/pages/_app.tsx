@@ -5,6 +5,7 @@ import { createClient, useAccount, WagmiConfig } from "wagmi";
 import MainLayout from "../layout/mainLayout";
 import { getChainsConfig } from "../assets/utils";
 import { useRouter } from "next/router";
+import { NotificationProvider } from "@web3uikit/core";
 
 const { chains, provider } = getChainsConfig(process.env.ALCHEMY_API_KEY);
 
@@ -34,9 +35,11 @@ function MyApp({ Component, pageProps }) {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider modalSize="compact" chains={chains}>
-        <MainLayout>
-          <Component {...pageProps} />
-        </MainLayout>
+        <NotificationProvider>
+          <MainLayout>
+            <Component {...pageProps} />
+          </MainLayout>
+        </NotificationProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   );
