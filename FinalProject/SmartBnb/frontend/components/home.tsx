@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/Home.module.css";
 import Link from "next/link";
 import bg from "../public/frontpagebg2.png";
-import { Select, DatePicker, Input, Button } from "web3uikit";
+import { Select, DatePicker, Input, Button } from "@web3uikit/core";
 import { useState } from "react";
 
 const Home = () => {

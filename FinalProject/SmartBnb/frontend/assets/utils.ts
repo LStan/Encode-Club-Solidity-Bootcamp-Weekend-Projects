@@ -5,6 +5,8 @@ import { publicProvider } from "wagmi/providers/public";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { ethers } from "ethers";
 
+export const LISTING_FEE = 0.0001;
+
 const SMARTBNB_CONTRACT_ADDRESS_LOCALHOST =
   "0x40d3989CF95885f6456aCe44beC69Ac198Eb06F9";
 
