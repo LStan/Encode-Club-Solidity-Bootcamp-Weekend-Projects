@@ -34,7 +34,7 @@ function StayHere({ rental }) {
       console.log(startTimestamp, endTimestamp, numDays);
       console.log(
         ethers.utils.parseEther(
-          (Number(rental.pricePerDay) * numDays).toFixed(18)
+          (Number(rental.pricePerDay) * numDays).toString()
         )
       );
 
@@ -46,7 +46,7 @@ function StayHere({ rental }) {
         endTimestamp,
         {
           value: ethers.utils.parseEther(
-            (Number(rental.pricePerDay) * numDays).toFixed(18)
+            (Number(rental.pricePerDay) * numDays).toString()
           ),
         }
       );
@@ -73,8 +73,10 @@ function StayHere({ rental }) {
   return (
     <>
       {/* TODO add style */}
-      
-      <Button color="gradient" auto ghost onClick={() => setVisible(true)}>Stay Here</Button>
+
+      <Button color="gradient" auto ghost onClick={() => setVisible(true)}>
+        Stay Here
+      </Button>
 
       <Modal
         closeButton

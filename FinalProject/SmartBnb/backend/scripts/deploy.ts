@@ -22,9 +22,9 @@ async function main() {
       rental.description,
       rental.imgUrl,
       rental.maxGuests,
-      ethers.utils.parseEther(rental.pricePerDay.toFixed(18)),
+      ethers.utils.parseEther(rental.pricePerDay.toString()),
       {
-        value: ethers.utils.parseEther(LISTING_FEE.toFixed(18)),
+        value: ethers.utils.parseEther(LISTING_FEE.toString()),
       }
     );
   }

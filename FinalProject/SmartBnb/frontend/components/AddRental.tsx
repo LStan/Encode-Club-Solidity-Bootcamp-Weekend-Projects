@@ -52,9 +52,9 @@ function AddRental() {
         formInput.description,
         cid,
         formInput.maxGuests,
-        ethers.utils.parseEther(formInput.pricePerDay.toFixed(18)),
+        ethers.utils.parseEther(formInput.pricePerDay.toString()),
         {
-          value: ethers.utils.parseEther(LISTING_FEE.toFixed(18)),
+          value: ethers.utils.parseEther(LISTING_FEE.toString()),
         }
       );
       await tx.wait();

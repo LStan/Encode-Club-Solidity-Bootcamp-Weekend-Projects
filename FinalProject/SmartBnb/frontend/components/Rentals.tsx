@@ -3,42 +3,50 @@ import { useNetwork, useSigner } from "wagmi";
 import { getSmartBnbContract } from "../assets/utils";
 import StayHere from "./StayHere";
 import { Card, Col, Grid, Row, Text } from "@nextui-org/react";
+import { ethers } from "ethers";
 
 function Rentals() {
   const { data: signer } = useSigner();
   const { chain, chains } = useNetwork();
-  const contract = getSmartBnbContract(signer, chain);
 
-  const [rentalsList, setRentalsList] = useState([]);
+  const [rentalsList, setRentalsList] = useState([
+    {
+      id: 0,
+      name: "",
+      city: "",
+      lat: "",
+      long: "",
+      description: "",
+      imgUrl: "",
+      maxGuests: 0,
+      pricePerDay: 0,
+    },
+  ]);
 
   useEffect(() => {
     async function getRentals() {
       // TODO get rentals from the contract
-      if (contract) {
-        try {
-          const noOfProps = await contract.rentalIds();
-  
-          setRentalsList([]);
-  
-          for (let index = 0; index < noOfProps; index++) {
-            const property = await contract.getRentalInfo(index);
-  
-            const formattedProperty = {
-              id: property['id'],
-              name: property['name'],
-              lat: property['lat'],
-              long: property['long'],
-              description: property['description'],
-              imgUrl: property['imgUrl'],
-              maxGuests: property['maxGuests'],
-              pricePerDay: property['pricePerDay']
-            };
-  
-            setRentalsList(prevState => [...prevState, formattedProperty]);
-          }
-        } catch (error) {
-          console.error(error);
-        }
+      try {
+        const smartBnbContract = getSmartBnbContract(signer, chain);
+        const rentalsData = await smartBnbContract.getRentals();
+        console.log("Rentals");
+        console.log(rentalsData);
+
+        const rentals = rentalsData.map((rental, index) => ({
+          id: rental.id.toNumber(),
+          name: rental.name,
+          city: rental.city,
+          lat: rental.lat,
+          long: rental.long,
+          description: rental.description,
+          imgUrl: rental.imgUrl,
+          maxGuests: rental.maxGuests.toNumber(),
+          pricePerDay: ethers.utils.formatEther(rental.pricePerDay),
+        }));
+        console.log(rentals);
+        setRentalsList(rentals);
+      } catch (error) {
+        console.error(error);
       }
 
       // const rentals = [
@@ -71,7 +79,7 @@ function Rentals() {
     }
 
     getRentals();
-  }, []);
+  }, [signer, chain]);
 
   return (
     <>
@@ -86,9 +94,9 @@ function Rentals() {
                     <Card.Header>
                       <Col>
                         <Text b>{rental.name}</Text>
-                        <br/>
+                        <br />
                         <Text b>{rental.city}</Text>
-                        <br/>
+                        <br />
                         <Text b>{rental.description}</Text>
                       </Col>
                     </Card.Header>
@@ -100,15 +108,27 @@ function Rentals() {
                         width="100%"
                         height={140}
                         alt={rental.name}
-                      /> 
+                      />
                     </Card.Body>
                     <Card.Divider />
                     <Card.Footer css={{ justifyItems: "flex-start" }}>
                       <Row wrap="wrap" justify="space-between" align="center">
-                        <Text css={{ color: "$accents7", fontWeight: "$semibold", fontSize: "$sm" }}>
+                        <Text
+                          css={{
+                            color: "$accents7",
+                            fontWeight: "$semibold",
+                            fontSize: "$sm",
+                          }}
+                        >
                           Maximum Guest: {rental.maxGuests}
                         </Text>
-                        <Text css={{ color: "$accents7", fontWeight: "$semibold", fontSize: "$sm" }}>
+                        <Text
+                          css={{
+                            color: "$accents7",
+                            fontWeight: "$semibold",
+                            fontSize: "$sm",
+                          }}
+                        >
                           Price: {rental.pricePerDay}
                         </Text>
                       </Row>
@@ -119,7 +139,7 @@ function Rentals() {
               </>
             );
           })}
-        </Grid.Container>
+      </Grid.Container>
     </>
   );
 }

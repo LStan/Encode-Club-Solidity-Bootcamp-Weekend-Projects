@@ -5,7 +5,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract SmartBnb is Ownable {
     uint256 public listingFee;
-    uint256 public rentalIds;
+    uint256 private rentalIds;
 
     struct RentalInfo {
         uint256 id;
@@ -47,13 +47,15 @@ contract SmartBnb is Ownable {
     //     uint256 timestamp
     // );
 
-    // event NewBookAdded(
-    //     uint256 rentalId,
-    //     address renter,
-    //     uint256 bookDateStart,
-    //     uint256 bookDateEnd,
-    //     uint256 timestamp
-    // );
+    event NewBookAdded(
+        address indexed renter,
+        uint256 rentalId,
+        uint256 bookDateStart,
+        uint256 bookDateEnd,
+        string city,
+        string imgUrl,
+        uint256 timestamp
+    );
 
     //--------------------------------------------------------------------
     // MODIFIERS
@@ -144,13 +146,15 @@ contract SmartBnb is Ownable {
         (bool sent, ) = payable(rental.owner).call{value: msg.value}("");
         require(sent, "Failed to send Ether");
 
-        // emit NewBookAdded(
-        //     _id,
-        //     msg.sender,
-        //     _fromDateTimestamp,
-        //     _toDateTimestamp,
-        //     block.timestamp
-        // );
+        emit NewBookAdded(
+            msg.sender,
+            _id,
+            _fromDateTimestamp,
+            _toDateTimestamp,
+            rental.city,
+            rental.imgUrl,
+            block.timestamp
+        );
     }
 
     function checkIfBooked(
