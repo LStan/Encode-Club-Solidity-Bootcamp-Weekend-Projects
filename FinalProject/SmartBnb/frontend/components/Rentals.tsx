@@ -4,6 +4,7 @@ import { useNetwork, useSigner } from "wagmi";
 import { getSmartBnbContract, LISTING_FEE } from "../assets/utils";
 import { ethers } from "ethers";
 import StayHere from "./StayHere";
+import { Card, Col, Row, Text } from "@nextui-org/react";
 
 function Rentals() {
   const { data: signer } = useSigner();
@@ -65,14 +66,38 @@ function Rentals() {
           return (
             <>
               {/* TODO build a card from the data*/}
-              <div>
-                {rental.name}
-                {rental.city}
-                {rental.description}
-                {`https://ipfs.io/${rental.imgUrl}`}
-                {rental.maxGuests}
-                {rental.pricePerDay}
-                <StayHere rental={rental} />
+              <div key={i}>
+                <Card css={{ mw: "400px" }}>
+                  <Card.Header>
+                    <Col>
+                      <Text b>{rental.name}</Text>
+                      <Text b>{rental.city}</Text>
+                      <Text b>{rental.description}</Text>
+                    </Col>
+                  </Card.Header>
+                  <Card.Divider />
+                  <Card.Body>
+                    <Card.Image
+                      src={`https://ipfs.io/ipfs/${rental.imgUrl}`}
+                      objectFit="cover"
+                      width="100%"
+                      height={140}
+                      alt={rental.name}
+                    /> 
+                  </Card.Body>
+                  <Card.Divider />
+                  <Card.Footer css={{ justifyItems: "flex-start" }}>
+                    <Row wrap="wrap" justify="space-between" align="center">
+                      <Text css={{ color: "$accents7", fontWeight: "$semibold", fontSize: "$sm" }}>
+                        {rental.maxGuests}
+                      </Text>
+                      <Text css={{ color: "$accents7", fontWeight: "$semibold", fontSize: "$sm" }}>
+                        {rental.pricePerDay}
+                      </Text>
+                    </Row>
+                    <StayHere rental={rental} />
+                  </Card.Footer>
+                </Card>
               </div>
             </>
           );
