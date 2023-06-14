@@ -31,6 +31,7 @@ function AddRental() {
 
     try {
       notify({
+        id: "info",
         type: "info",
         title: "Trying to add...",
         position: "topL",

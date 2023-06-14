@@ -1,4 +1,5 @@
-import { Modal, useNotification } from "@web3uikit/core";
+import { useNotification } from "@web3uikit/core";
+import { Modal, Input, Text, Button } from "@nextui-org/react";
 import { useState } from "react";
 import { useNetwork, useSigner } from "wagmi";
 import { getSmartBnbContract } from "../assets/utils";
@@ -10,6 +11,8 @@ function StayHere({ rental }) {
   const notify = useNotification();
 
   // TODO some useStates for dates
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
 
   const { data: signer } = useSigner();
   const { chain, chains } = useNetwork();
@@ -17,12 +20,38 @@ function StayHere({ rental }) {
   const book = async () => {
     try {
       notify({
+        id: "info",
         type: "info",
         title: "Trying to book...",
         position: "topL",
       });
 
-      // TODO smartBnbContract.bookDates with rental.id and value rental.pricePerDay * numDays
+      const startTimestamp = Math.ceil(startDate.getTime() / 1000);
+      let endTimestamp = endDate.getTime() / 1000;
+      const numDays = Math.ceil(
+        (endTimestamp - startTimestamp) / (60 * 60 * 24)
+      );
+      endTimestamp = startTimestamp + numDays * (60 * 60 * 24);
+      console.log(startTimestamp, endTimestamp, numDays);
+      console.log(
+        ethers.utils.parseEther(
+          (Number(rental.pricePerDay) * numDays).toFixed(18)
+        )
+      );
+
+      const smartBnbContract = getSmartBnbContract(signer, chain);
+
+      const tx = await smartBnbContract.bookDates(
+        rental.id,
+        startTimestamp,
+        endTimestamp,
+        {
+          value: ethers.utils.parseEther(
+            (Number(rental.pricePerDay) * numDays).toFixed(18)
+          ),
+        }
+      );
+      await tx.wait();
 
       console.log("OK");
       notify({
@@ -49,16 +78,35 @@ function StayHere({ rental }) {
       <Button onClick={() => setVisible(true)}>Stay Here</Button>
 
       <Modal
-        onCloseButtonPressed={() => setVisible(false)}
-        hasCancel={false}
-        title="Choose dates"
-        isVisible={isVisible}
-        okButtonColor="red"
-        okText="Rent"
-        width="400px"
-        onOk={book}
+        closeButton
+        aria-labelledby="modal-title"
+        open={isVisible}
+        onClose={() => setVisible(false)}
       >
-        {/* TODO add DatePickers */}
+        <Modal.Header>
+          <Text id="modal-title" size={18}>
+            Choose dates
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Input
+            width="186px"
+            label="Check In"
+            type="date"
+            onChange={(e) => setStartDate(new Date(e.target.value))}
+          />
+          <Input
+            width="186px"
+            label="Check Out"
+            type="date"
+            onChange={(e) => setEndDate(new Date(e.target.value))}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button auto onPress={book}>
+            Book
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );
