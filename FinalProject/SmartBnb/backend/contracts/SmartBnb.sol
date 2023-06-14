@@ -128,7 +128,7 @@ contract SmartBnb is Ownable {
         require(bookingPeriod >= 1, "Can't book less than 1 day");
 
         require(
-            (rental.pricePerDay * bookingPeriod) == msg.value,
+            (rental.pricePerDay * bookingPeriod) <= msg.value,
             "Insufficient amount"
         );
 
