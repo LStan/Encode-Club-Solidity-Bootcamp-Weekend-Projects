@@ -5,7 +5,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract SmartBnb is Ownable {
     uint256 public listingFee;
-    uint256 private rentalIds;
+    uint256 public rentalIds;
 
     struct RentalInfo {
         uint256 id;

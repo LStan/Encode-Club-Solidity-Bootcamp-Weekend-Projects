@@ -9,51 +9,67 @@ import { Card, Col, Grid, Row, Text } from "@nextui-org/react";
 function Rentals() {
   const { data: signer } = useSigner();
   const { chain, chains } = useNetwork();
+  const contract = getSmartBnbContract(signer, chain);
 
-  const [rentalsList, setRentalsList] = useState([
-    {
-      id: 0,
-      name: "",
-      city: "",
-      lat: "",
-      long: "",
-      description: "",
-      imgUrl: "",
-      maxGuests: 0,
-      pricePerDay: 0,
-    },
-  ]);
+  const [rentalsList, setRentalsList] = useState([]);
 
   useEffect(() => {
     async function getRentals() {
       // TODO get rentals from the contract
-      const rentals = [
-        {
-          id: 0,
-          name: "Apartment in China Town",
-          city: "New York",
-          lat: "40.716862",
-          long: "-73.999005",
-          description: "2 Beds • 2 Rooms • Wifi • Kitchen • Living Area",
-          imgUrl: "QmYJ5gudjXz9kfbicexS4H7GVvY1ZGAWRUCaqS8sGawjo2",
-          maxGuests: 3,
-          pricePerDay: 0.001,
-        },
-        {
-          id: 1,
-          name: "Luxury Suite in Victorian House",
-          city: "London",
-          lat: "51.53568",
-          long: "-0.20565",
-          description: "1 Beds • 1 Rooms • Bathtub • Wifi",
-          imgUrl: "Qmek4kfSzwX2iX9BkswMo2HHLwbQxZbdBTerbF9FSQPJzJ",
-          maxGuests: 2,
-          pricePerDay: 0.015,
-        },
-      ];
-      console.log(rentals);
+      if (contract) {
+        try {
+          const noOfProps = await contract.rentalIds();
+  
+          setRentalsList([]);
+  
+          for (let index = 0; index < noOfProps; index++) {
+            const property = await contract.getRentalInfo(index);
+  
+            const formattedProperty = {
+              id: property['id'],
+              name: property['name'],
+              lat: property['lat'],
+              long: property['long'],
+              description: property['description'],
+              imgUrl: property['imgUrl'],
+              maxGuests: property['maxGuests'],
+              pricePerDay: property['pricePerDay']
+            };
+  
+            setRentalsList(prevState => [...prevState, formattedProperty]);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
 
-      setRentalsList(rentals);
+      // const rentals = [
+      //   {
+      //     id: 0,
+      //     name: "Apartment in China Town",
+      //     city: "New York",
+      //     lat: "40.716862",
+      //     long: "-73.999005",
+      //     description: "2 Beds • 2 Rooms • Wifi • Kitchen • Living Area",
+      //     imgUrl: "QmYJ5gudjXz9kfbicexS4H7GVvY1ZGAWRUCaqS8sGawjo2",
+      //     maxGuests: 3,
+      //     pricePerDay: 0.001,
+      //   },
+      //   {
+      //     id: 1,
+      //     name: "Luxury Suite in Victorian House",
+      //     city: "London",
+      //     lat: "51.53568",
+      //     long: "-0.20565",
+      //     description: "1 Beds • 1 Rooms • Bathtub • Wifi",
+      //     imgUrl: "Qmek4kfSzwX2iX9BkswMo2HHLwbQxZbdBTerbF9FSQPJzJ",
+      //     maxGuests: 2,
+      //     pricePerDay: 0.015,
+      //   },
+      // ];
+      // console.log(rentals);
+
+      // setRentalsList(rentals);
     }
 
     getRentals();

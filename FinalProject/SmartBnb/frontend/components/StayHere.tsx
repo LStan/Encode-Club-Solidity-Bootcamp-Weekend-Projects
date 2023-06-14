@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNetwork, useSigner } from "wagmi";
 import { getSmartBnbContract } from "../assets/utils";
 import { ethers } from "ethers";
+import { Button } from "@nextui-org/react";
 
 function StayHere({ rental }) {
   const [isVisible, setVisible] = useState(false);
@@ -44,7 +45,8 @@ function StayHere({ rental }) {
   return (
     <>
       {/* TODO add style */}
-      <button onClick={() => setVisible(true)}>Stay Here</button>
+      
+      <Button onClick={() => setVisible(true)}>Stay Here</Button>
 
       <Modal
         onCloseButtonPressed={() => setVisible(false)}

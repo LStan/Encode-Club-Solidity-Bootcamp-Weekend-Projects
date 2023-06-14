@@ -11,7 +11,7 @@ const SMARTBNB_CONTRACT_ADDRESS_LOCALHOST =
   "0x40d3989CF95885f6456aCe44beC69Ac198Eb06F9";
 
 const SMARTBNB_CONTRACT_ADDRESS_GOERLI =
-  "0x5712DE56c5E00CE7223D6554617700B988DA1E5D";
+  "0xA186f4BE5cE0954Ec7E18B51A663CB8c06DE534c";
 
 const SMARTBNB_CONTRACT_ADDRESS_MUMBAI = "";
 
@@ -21,6 +21,7 @@ export function getSmartBnbContract(
   signerOrProvider: ethers.providers.Provider | ethers.Signer,
   chain: Chain
 ) {
+  console.log(chain);
   switch (chain.network) {
     case "localhost":
       return new ethers.Contract(
