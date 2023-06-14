@@ -1,8 +1,6 @@
-import { Modal, Input, useNotification } from "@web3uikit/core";
 import { useEffect, useState } from "react";
 import { useNetwork, useSigner } from "wagmi";
-import { getSmartBnbContract, LISTING_FEE } from "../assets/utils";
-import { ethers } from "ethers";
+import { getSmartBnbContract } from "../assets/utils";
 import StayHere from "./StayHere";
 import { Card, Col, Grid, Row, Text } from "@nextui-org/react";
 
