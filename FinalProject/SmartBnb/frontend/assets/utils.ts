@@ -13,9 +13,11 @@ const SMARTBNB_CONTRACT_ADDRESS_LOCALHOST =
 const SMARTBNB_CONTRACT_ADDRESS_GOERLI =
   "0x92A36101B55e8118e36F4b67383aA8A4D4aEc8b5";
 
-const SMARTBNB_CONTRACT_ADDRESS_MUMBAI = "0x95769608CaE7BF8F4694985F8F82dD950337d068";
+const SMARTBNB_CONTRACT_ADDRESS_MUMBAI =
+  "0x95769608CaE7BF8F4694985F8F82dD950337d068";
 
-const SMARTBNB_CONTRACT_ADDRESS_SEPOLIA = "0x861F65C60264AfC84db7dA97bF28cBA74d63e08D";
+const SMARTBNB_CONTRACT_ADDRESS_SEPOLIA =
+  "0x861F65C60264AfC84db7dA97bF28cBA74d63e08D";
 
 export function getSmartBnbContract(
   signerOrProvider: ethers.providers.Provider | ethers.Signer,
@@ -37,13 +39,13 @@ export function getSmartBnbContract(
       );
     case "sepolia":
       return new ethers.Contract(
-        SMARTBNB_CONTRACT_ADDRESS_MUMBAI,
+        SMARTBNB_CONTRACT_ADDRESS_SEPOLIA,
         contractJson.abi,
         signerOrProvider
       );
     case "maticmum":
       return new ethers.Contract(
-        SMARTBNB_CONTRACT_ADDRESS_SEPOLIA,
+        SMARTBNB_CONTRACT_ADDRESS_MUMBAI,
         contractJson.abi,
         signerOrProvider
       );

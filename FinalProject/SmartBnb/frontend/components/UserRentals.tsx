@@ -12,6 +12,7 @@ function UserRentals() {
   const notify = useNotification();
 
   useEffect(() => {
+    if (!signer || !isVisible) return;
     let walletAddress;
     (async () => {
       walletAddress = await signer.getAddress();
