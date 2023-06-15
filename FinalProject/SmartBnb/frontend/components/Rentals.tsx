@@ -9,19 +9,19 @@ function Rentals() {
   const { data: signer } = useSigner();
   const { chain, chains } = useNetwork();
 
-  const [rentalsList, setRentalsList] = useState([
-    {
-      id: 0,
-      name: "",
-      city: "",
-      lat: "",
-      long: "",
-      description: "",
-      imgUrl: "",
-      maxGuests: 0,
-      pricePerDay: 0,
-    },
-  ]);
+  type Rental = {
+    id: Number;
+    name: string;
+    city: string;
+    lat: string;
+    long: string;
+    description: string;
+    imgUrl: string;
+    maxGuests: Number;
+    pricePerDay: Number;
+  };
+
+  const [rentalsList, setRentalsList] = useState<Rental[]>([]);
 
   useEffect(() => {
     async function getRentals() {
@@ -120,7 +120,7 @@ function Rentals() {
                             fontSize: "$sm",
                           }}
                         >
-                          Maximum Guest: {rental.maxGuests}
+                          Maximum Guest: {rental.maxGuests.toString()}
                         </Text>
                         <Text
                           css={{
@@ -129,7 +129,7 @@ function Rentals() {
                             fontSize: "$sm",
                           }}
                         >
-                          Price: {rental.pricePerDay}
+                          Price: {rental.pricePerDay.toString()}
                         </Text>
                       </Row>
                       <Row></Row>
