@@ -104,7 +104,7 @@ function StayHere({ rental }) {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button auto onPress={book}>
+          <Button color="error" auto onPress={book}>
             Book
           </Button>
         </Modal.Footer>

@@ -1,6 +1,6 @@
-import { Modal, Input, useNotification } from "@web3uikit/core";
+import { useNotification } from "@web3uikit/core";
+import { Modal, Input, Text, Button, Card } from "@nextui-org/react";
 import { useState } from "react";
-import styles from "../styles/AddRental.module.css";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
 import { useNetwork, useSigner } from "wagmi";
 import { getSmartBnbContract, LISTING_FEE } from "../assets/utils";
@@ -77,129 +77,89 @@ function AddRental() {
 
   return (
     <>
-      <div className={styles.floating_btn} onClick={() => setVisible(true)}>
-        Add rental
-      </div>
-
-      <Modal
-        onCloseButtonPressed={() => setVisible(false)}
-        hasCancel={false}
-        title="Add Your Rental"
-        isVisible={isVisible}
-        okButtonColor="red"
-        okText="Add"
-        width="700px"
-        onOk={addRental}
+      <Button
+        color="error"
+        auto
+        size="lg"
+        ghost
+        onPress={() => setVisible(true)}
+        css={{ position: "fixed", right: "20px", bottom: "20px" }}
       >
-        <div
-          style={{
-            padding: "10px 0 10px 0",
-          }}
-        >
+        Add rental
+      </Button>
+      <Modal
+        closeButton
+        aria-labelledby="modal-title"
+        open={isVisible}
+        width="700px"
+        onClose={() => setVisible(false)}
+      >
+        <Modal.Header>
+          <Text id="modal-title" b size={18}>
+            Add Your Rental
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
           <Input
             placeholder="Enter rental title"
-            name="Property name"
             label="Property name"
-            width="100%"
             type="text"
+            fullWidth
             onChange={(e) =>
               setFormInput({ ...formInput, name: e.target.value })
             }
           />
-        </div>
-        <div
-          style={{
-            padding: "10px 0 10px 0",
-          }}
-        >
           <Input
             placeholder="Enter your property city"
-            name="Property city"
             label="Property city"
-            width="100%"
             type="text"
+            fullWidth
             onChange={(e) =>
               setFormInput({ ...formInput, city: e.target.value })
             }
           />
-        </div>
-        <div
-          style={{
-            padding: "10px 0 10px 0",
-          }}
-        >
           <Input
             placeholder="Enter latitude"
-            name="Property Latitude"
             label="Property Latitude"
-            width="100%"
             type="text"
+            fullWidth
             onChange={(e) =>
               setFormInput({ ...formInput, lat: e.target.value })
             }
           />
-        </div>
-        <div
-          style={{
-            padding: "10px 0 10px 0",
-          }}
-        >
           <Input
             placeholder="Enter longitude"
-            name="Property Longitude"
             label="Property Longitude"
-            width="100%"
             type="text"
+            fullWidth
             onChange={(e) =>
               setFormInput({ ...formInput, long: e.target.value })
             }
           />
-        </div>
-        <div
-          style={{
-            padding: "10px 0 10px 0",
-          }}
-        >
           <Input
             placeholder="Enter a description of the place"
-            name="Property Description"
             label="Property Description"
-            width="100%"
             type="text"
+            fullWidth
             onChange={(e) =>
               setFormInput({ ...formInput, description: e.target.value })
             }
           />
-        </div>
-        <div
-          style={{
-            padding: "10px 0 10px 0",
-          }}
-        >
           <Input
             placeholder="Enter maximum number of guest"
-            name="Max number of guests"
             label="Max number of guests"
-            width="100%"
             type="number"
-            validation={{ numberMin: 1 }}
-            value={1}
+            fullWidth
+            // validation={{ numberMin: 1 }}
             onChange={(e) =>
               setFormInput({ ...formInput, maxGuests: Number(e.target.value) })
             }
           />
-        </div>
-        <div
-          style={{
-            padding: "10px 0 10px 0",
-          }}
-        >
           <Input
             placeholder="Enter rent price per day"
-            name="Price per day"
             label="Price per day"
-            width="100%"
             type="text"
+            fullWidth
             onChange={(e) =>
               setFormInput({
                 ...formInput,
@@ -207,16 +167,23 @@ function AddRental() {
               })
             }
           />
-        </div>
-        <input
-          type="file"
-          title="Chooser"
-          onChange={(e) => {
-            if (e.target.files) {
-              setFormInput({ ...formInput, imgUrl: e.target.files[0] });
+          <Input
+            label="Photo"
+            type="file"
+            fullWidth
+            onChange={(e) =>
+              setFormInput({
+                ...formInput,
+                imgUrl: (e.target as HTMLInputElement).files[0],
+              })
             }
-          }}
-        />
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color="error" auto onPress={addRental}>
+            Add
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

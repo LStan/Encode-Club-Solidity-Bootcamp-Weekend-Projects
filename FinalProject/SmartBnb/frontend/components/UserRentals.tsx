@@ -1,5 +1,5 @@
 import { useNotification } from "@web3uikit/core";
-import { Modal, Input, Text, Button, Card } from "@nextui-org/react";
+import { Modal, Text, Button, Card } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { useNetwork, useSigner } from "wagmi";
 import { getSmartBnbContract } from "../assets/utils";
