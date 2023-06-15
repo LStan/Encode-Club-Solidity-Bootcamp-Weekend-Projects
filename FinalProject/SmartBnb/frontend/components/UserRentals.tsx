@@ -84,15 +84,21 @@ function UserRentals() {
                     // title={e.attributes.city}
                     // description={`${e.attributes.datesBooked[0]} for ${e.attributes.datesBooked.length} Days`}
                     >
-                      <div>
-                        <img width="180px" src={rental.imgUrl} />
-                      </div>
-                      <div>
+                      <Card.Header>
                         {rental.city}
-                      </div>
-                      <div>
+                      </Card.Header>
+                      <Card.Body>
+                        <Card.Image
+                          src={rental.imgUrl}
+                          objectFit="cover"
+                          width="100%"
+                          height={140}
+                          alt={rental.name}
+                        />
+                      </Card.Body>
+                      <Card.Footer>
                         {`${rental.start} for ${rental.numDays} days`}
-                      </div>
+                      </Card.Footer>
                     </Card>
                   </div>
                 );
