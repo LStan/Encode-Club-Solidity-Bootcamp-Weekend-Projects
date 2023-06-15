@@ -1,5 +1,4 @@
 import styles from "../styles/Home.module.css";
-import PageBody from "../components/PageBody";
 import AddRental from "../components/AddRental";
 import Rentals from "../components/Rentals";
 import { useSigner } from "wagmi";

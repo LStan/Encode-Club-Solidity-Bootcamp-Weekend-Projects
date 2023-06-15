@@ -85,16 +85,3 @@ export function getChainsConfig(apiKey) {
     publicProvider(),
   ]);
 }
-
-export function getTransactionLink(transaction, chain) {
-  switch (chain.network) {
-    case "goerli":
-      return "https://goerli.etherscan.io/tx/" + transaction.transactionHash;
-    case "sepolia":
-      return "https://sepolia.etherscan.io/tx/" + transaction.transactionHash;
-    case "maticmum":
-      return "https://mumbai.polygonscan.com/" + transaction.transactionHash;
-    default:
-      throw new Error("Unknown network!");
-  }
-}
