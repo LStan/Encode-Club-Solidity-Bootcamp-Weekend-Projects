@@ -132,6 +132,7 @@ function Rentals() {
                           Price: {rental.pricePerDay}
                         </Text>
                       </Row>
+                      <Row></Row>
                       <StayHere rental={rental} />
                     </Card.Footer>
                   </Card>

@@ -74,7 +74,7 @@ function StayHere({ rental }) {
     <>
       {/* TODO add style */}
 
-      <Button color="gradient" auto ghost onClick={() => setVisible(true)}>
+      <Button color="error" auto onClick={() => setVisible(true)}>
         Stay Here
       </Button>
 
