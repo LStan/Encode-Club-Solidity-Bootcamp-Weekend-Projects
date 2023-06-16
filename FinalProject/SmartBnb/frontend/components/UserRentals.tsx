@@ -13,12 +13,10 @@ function UserRentals() {
 
   useEffect(() => {
     if (!signer || !isVisible) return;
-    let walletAddress;
-    (async () => {
-      walletAddress = await signer.getAddress();
-    })();
+
     async function fetchRentals() {
       try {
+        const walletAddress = await signer.getAddress();
         const smartBnbContract = getSmartBnbContract(signer, chain);
         const filter = smartBnbContract.filters.NewBookAdded(walletAddress);
         console.log(filter);
@@ -85,9 +83,7 @@ function UserRentals() {
                     // title={e.attributes.city}
                     // description={`${e.attributes.datesBooked[0]} for ${e.attributes.datesBooked.length} Days`}
                     >
-                      <Card.Header>
-                        {rental.city}
-                      </Card.Header>
+                      <Card.Header>{rental.city}</Card.Header>
                       <Card.Body>
                         <Card.Image
                           src={rental.imgUrl}
